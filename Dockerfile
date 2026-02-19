@@ -12,7 +12,7 @@ RUN apk add --no-cache oniguruma-dev \
 WORKDIR /app
 
 COPY composer.json composer.lock ./
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+RUN composer update --no-dev --optimize-autoloader --no-interaction
 
 COPY . .
 
