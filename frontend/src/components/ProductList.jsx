@@ -11,7 +11,10 @@ export default function ProductList() {
   });
 
   if (loading) return <div className="loading">Loading...</div>;
-  if (error) return <div className="error">Error loading products</div>;
+  if (error) {
+    const msg = error?.graphQLErrors?.[0]?.message ?? error?.networkError?.message ?? error?.message ?? 'Error loading products';
+    return <div className="error">Error loading products: {String(msg)}</div>;
+  }
 
   const products = data?.products ?? [];
 

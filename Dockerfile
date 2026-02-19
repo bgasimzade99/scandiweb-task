@@ -17,5 +17,5 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction
 COPY . .
 
 EXPOSE 8000
-# Railway sets PORT env. Router script required: without it, /graphql returns 404 (no public/graphql file)
-CMD php -S 0.0.0.0:${PORT:-8000} -t public public/index.php
+# Seed DB on start, then serve. Railway backend Variables: DB_HOST, DB_NAME, DB_USER, DB_PASS
+CMD ["/bin/sh", "-c", "php scripts/import-schema.php 2>/dev/null || true; exec php -S 0.0.0.0:${PORT:-8000} -t public public/index.php"]

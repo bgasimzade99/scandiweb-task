@@ -28,7 +28,7 @@ Configure these in your Railway project dashboard.
 | `DB_USER` | Yes      | MySQL username                       |
 | `DB_PASS` | Yes      | MySQL password                       |
 
-If you use Railway’s MySQL plugin, link it to the backend service and add the variables from its connection details.
+If you use Railway’s MySQL plugin, Backend->Variables: add refs MYSQLHOST->DB_HOST, MYSQLDATABASE->DB_NAME, MYSQLUSER->DB_USER, MYSQLPASSWORD->DB_PASS. DB auto-seeds on deploy.
 
 ---
 
