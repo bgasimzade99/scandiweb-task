@@ -1,5 +1,7 @@
 # Railway DB Variables – Backend servisine ekle
 
+**Hata:** `mysql:host=loca...` = Backend localhost'a bağlanıyor → DB değişkenleri Backend servisine EKLENMEMİŞ.
+
 `DB_*` değişkenleri **MySQL servisinde değil**, **Backend (PHP) servisinde** olmalı.
 
 ## Adımlar

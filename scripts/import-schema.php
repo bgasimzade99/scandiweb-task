@@ -5,10 +5,10 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->safeLoad();
 
-$host = $_ENV['DB_HOST'] ?? 'localhost';
-$dbname = $_ENV['DB_NAME'] ?? 'scandiweb';
-$user = $_ENV['DB_USER'] ?? 'root';
-$pass = $_ENV['DB_PASS'] ?? '';
+$host = $_ENV['DB_HOST'] ?? $_ENV['MYSQLHOST'] ?? 'localhost';
+$dbname = $_ENV['DB_NAME'] ?? $_ENV['MYSQLDATABASE'] ?? 'scandiweb';
+$user = $_ENV['DB_USER'] ?? $_ENV['MYSQLUSER'] ?? 'root';
+$pass = $_ENV['DB_PASS'] ?? $_ENV['MYSQLPASSWORD'] ?? '';
 
 // Create DB if not exists (connect without dbname first)
 $dsn = "mysql:host={$host};charset=utf8mb4";
