@@ -32,7 +32,7 @@ class SchemaBuilder
             'fields' => [
                 'categories' => [
                     'type' => Type::listOf($categoryType),
-                    'resolve' => static fn () => $categoryModel->findAll(),
+                    'resolve' => static function () use ($categoryModel) { return $categoryModel->findAll(); },
                 ],
                 'category' => [
                     'type' => $categoryType,
@@ -124,11 +124,13 @@ class SchemaBuilder
                             $priceStmt->execute([$product['id']]);
                             $price = $priceStmt->fetch();
                             $amount = $price ? (float) $price['amount'] : 0;
-                            $currency = $price && isset($price['currency'])
-                                ? (is_string($price['currency'])
+                            $currency = ['label' => 'USD', 'symbol' => '$'];
+                            if ($price && isset($price['currency'])) {
+                                $currency = is_string($price['currency'])
                                     ? json_decode($price['currency'], true)
-                                    : $price['currency']
-                                : ['label' => 'USD', 'symbol' => '$'];
+                                    : $price['currency'];
+                                $currency = is_array($currency) ? $currency : ['label' => 'USD', 'symbol' => '$'];
+                            }
                             $qty = (int) ($item['quantity'] ?? 1);
                             $total += $amount * $qty;
 

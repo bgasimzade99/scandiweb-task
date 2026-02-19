@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 $path = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?? '/';
 $basePath = rtrim($_ENV['BASE_PATH'] ?? '', '/');
-if ($basePath !== '' && str_starts_with($path, $basePath)) {
+if ($basePath !== '' && substr($path, 0, strlen($basePath)) === $basePath) {
     $path = substr($path, strlen($basePath)) ?: '/';
 }
 $path = '/' . trim($path, '/');
@@ -30,7 +30,7 @@ if ($path === '//') {
 
 $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
     $r->get('/', fn() => json_encode(['status' => 'ok', 'endpoints' => ['/health', '/graphql']]));
-    $r->get('/health', fn() => json_encode(['status' => 'ok']));
+    $r->get('/health', fn() => json_encode(['status' => 'ok', 'php' => PHP_VERSION]));
     $r->get('/graphql-ping', function () {
         header('Content-Type: application/json');
         try {
@@ -64,7 +64,7 @@ switch ($routeInfo[0]) {
         $handler = $routeInfo[1];
         $vars = $routeInfo[2];
         $result = call_user_func_array($handler, [$vars]);
-        if (is_string($result) && str_starts_with($result, '{')) {
+        if (is_string($result) && substr($result, 0, 1) === '{') {
             header('Content-Type: application/json; charset=UTF-8');
         }
         echo $result;

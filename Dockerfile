@@ -1,5 +1,5 @@
-# PHP 8.3 - graphql-php v15.30 may use PHP 8.3 features
-FROM php:8.3-cli-alpine
+# PHP 8.0 - compatible with deps (phpdotenv 5.x); avoids PHP 8.3 ParseError
+FROM php:8.0-cli-alpine
 
 # Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
