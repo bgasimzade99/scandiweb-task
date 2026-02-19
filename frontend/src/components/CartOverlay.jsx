@@ -7,7 +7,7 @@ import { toKebab } from '../utils/testId';
 import './CartOverlay.css';
 
 export default function CartOverlay({ onClose }) {
-  const { cart, updateQuantity, totalPrice, totalItems, clearCart } = useCart();
+  const { cart, updateQuantity, removeFromCart, totalPrice, totalItems, clearCart } = useCart();
   const [orderError, setOrderError] = useState(null);
   const [placeOrder, { loading }] = useMutation(PLACE_ORDER, {
     onCompleted: (data) => {
@@ -68,7 +68,17 @@ export default function CartOverlay({ onClose }) {
               <div key={item.key} className="cart-item">
                 <div className="cart-item-info">
                   <div className="cart-item-info-inner">
-                    <p className="cart-item-name">{item.name}</p>
+                    <div className="cart-item-name-row">
+                      <p className="cart-item-name">{item.name}</p>
+                      <button
+                        type="button"
+                        className="cart-item-remove"
+                        onClick={() => removeFromCart(item.key)}
+                        aria-label={`Remove ${item.name} from cart`}
+                      >
+                        Remove
+                      </button>
+                    </div>
                     <p className="cart-item-price">
                       {symbol}{item.prices?.[0]?.amount?.toFixed(2)}
                     </p>

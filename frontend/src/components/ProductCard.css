@@ -101,6 +101,7 @@
   width: 100%;
   flex: none;
   gap: 0;
+  margin-top: 0;
 }
 
 .product-name {
@@ -110,20 +111,20 @@
   font-size: 18px;
   line-height: 160%;
   color: #1D1F22;
-  margin: 0 0 0 0;
+  margin: 0 0 4px 0;
   align-self: stretch;
 }
 
 .product-price {
   font-family: 'Raleway', sans-serif;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 600;
   font-size: 18px;
   line-height: 160%;
-  text-align: right;
   color: #1D1F22;
   margin: 0;
-  align-self: flex-end;
+  align-self: stretch;
+  text-align: left;
 }
 
 .product-card.out-of-stock .product-price {

@@ -109,7 +109,6 @@
   flex-direction: column;
   flex: 1;
   min-width: 0;
-  pointer-events: none;
 }
 
 .cart-item-info-inner {
@@ -117,6 +116,38 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 8px;
+}
+
+.cart-item-name-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+}
+
+.cart-item-name-row .cart-item-name {
+  flex: 1;
+  min-width: 0;
+}
+
+.cart-item-remove {
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: 'Raleway', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #8D8F9A;
+  cursor: pointer;
+  text-decoration: underline;
+  flex-shrink: 0;
+  transition: color 0.2s;
+}
+
+.cart-item-remove:hover {
+  color: #1D1F22;
 }
 
 /* Frame 3 - Title + price */
@@ -138,13 +169,14 @@
   margin: 0;
 }
 
-/* Frame 6 - Size / text attribute */
+/* Attributes - not clickable */
 .cart-item-attr {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 8px;
   margin: 0;
+  pointer-events: none;
 }
 
 .cart-item-attr:last-child {
