@@ -16,17 +16,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
+$path = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?? '/';
+$basePath = rtrim($_ENV['BASE_PATH'] ?? '', '/');
+if ($basePath !== '' && str_starts_with($path, $basePath)) {
+    $path = substr($path, strlen($basePath)) ?: '/';
+}
+$path = '/' . trim($path, '/');
+if ($path === '//') {
+    $path = '/';
+}
+
 $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
+    $r->get('/', fn() => json_encode(['status' => 'ok', 'endpoints' => ['/health', '/graphql']]));
     $r->get('/health', fn() => json_encode(['status' => 'ok']));
     $r->post('/graphql', [App\Controller\GraphQL::class, 'handle']);
 });
-
-$path = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?? '/';
 $routeInfo = $dispatcher->dispatch($_SERVER['REQUEST_METHOD'], $path);
 
 switch ($routeInfo[0]) {
     case FastRoute\Dispatcher::NOT_FOUND:
-        if ($_SERVER['REQUEST_METHOD'] === 'GET' && $path === '/' && file_exists(__DIR__ . '/index.html')) {
+        if ($_SERVER['REQUEST_METHOD'] === 'GET' && $path === '/' && file_exists(__DIR__ . '/index.html') && !isset($_GET['json'])) {
             readfile(__DIR__ . '/index.html');
         } else {
             http_response_code(404);

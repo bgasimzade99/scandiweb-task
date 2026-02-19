@@ -48,13 +48,14 @@ Replace `YOUR-RAILWAY-URL` with your Railway backend public URL.
 
 After deployment, use these URLs (replace `YOUR-RAILWAY-URL` with your backend URL):
 
-### Health Check (GET)
+### Root / Health Check (GET)
 
 ```bash
+curl -i https://YOUR-RAILWAY-URL.up.railway.app/
 curl -i https://YOUR-RAILWAY-URL.up.railway.app/health
 ```
 
-**Expected:** `200 OK` with `{"status":"ok"}`.
+**Expected:** `200 OK` with `{"status":"ok","endpoints":["/health","/graphql"]}` (root) or `{"status":"ok"}` (/health).
 
 ### GraphQL (POST)
 
