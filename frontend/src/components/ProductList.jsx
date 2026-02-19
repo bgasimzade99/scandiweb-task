@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client/react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { GET_PRODUCTS } from '../graphql/queries';
 import ProductCard from './ProductCard';
 import './ProductList.css';
@@ -25,9 +25,19 @@ export default function ProductList() {
 
   const products = data?.products ?? [];
 
+  const showBack = category && category !== 'all';
+
   return (
     <main className="product-list-page">
-      <h1 className="category-title">{category ?? 'all'}</h1>
+      <div className="category-header">
+        {showBack && (
+          <Link to="/category/all" className="back-link">
+            <span className="back-arrow">←</span>
+            All
+          </Link>
+        )}
+        <h1 className="category-title">{category ?? 'all'}</h1>
+      </div>
       <div className="product-grid">
         {products.map((product) => (
           <ProductCard key={product.id} product={product} />

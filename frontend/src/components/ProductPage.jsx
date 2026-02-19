@@ -1,5 +1,5 @@
-import { useParams } from 'react-router-dom';
-import { useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { useQuery } from '@apollo/client/react';
 import parse from 'html-react-parser';
 import { GET_PRODUCT } from '../graphql/queries';
@@ -18,6 +18,20 @@ export default function ProductPage() {
 
   const { addToCart } = useCart();
   const product = data?.product;
+
+  useEffect(() => {
+    if (product?.attributes) {
+      const defaults = {};
+      product.attributes.forEach((attr) => {
+        if (attr.items?.[0]) {
+          defaults[attr.name] = attr.items[0].value;
+        }
+      });
+      setSelectedAttrs(defaults);
+    } else {
+      setSelectedAttrs({});
+    }
+  }, [product?.id]);
 
   if (loading) return <div className="loading">Loading...</div>;
   if (error || !product) return <div className="error">Product not found</div>;
@@ -43,6 +57,10 @@ export default function ProductPage() {
   return (
     <>
       <main className="product-page">
+        <Link to="/category/all" className="back-link">
+          <span className="back-arrow">←</span>
+          All products
+        </Link>
         <div className="product-gallery" data-testid="product-gallery">
           <div className="gallery-thumbs">
             {gallery.map((src, i) => (

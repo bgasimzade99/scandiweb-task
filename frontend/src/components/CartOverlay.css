@@ -37,17 +37,50 @@
   flex: 1;
 }
 
-/* My Bag, 3 items */
+.cart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+
 .cart-title {
   font-family: 'Raleway', sans-serif;
   font-weight: 700;
   font-size: 16px;
   line-height: 160%;
   color: #1D1F22;
+  margin: 0;
 }
 
 .cart-title .cart-title-count {
   font-weight: 400;
+}
+
+.cart-close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #1D1F22;
+  border-radius: 50%;
+  transition: background 0.2s, color 0.2s;
+  flex-shrink: 0;
+}
+
+.cart-close-btn:hover {
+  background: rgba(29, 31, 34, 0.08);
+  color: #1D1F22;
+}
+
+.cart-close-btn:active {
+  background: rgba(29, 31, 34, 0.12);
 }
 
 /* Cart items list */

@@ -1,9 +1,33 @@
 .product-page {
   display: flex;
+  flex-wrap: wrap;
   gap: 6rem;
   padding: 2rem 6rem 4rem;
   max-width: 1440px;
   margin: 0 auto;
+}
+
+.product-page .back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Raleway', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: #1D1F22;
+  text-decoration: none;
+  margin-bottom: 2rem;
+  width: 100%;
+  transition: color 0.2s;
+}
+
+.product-page .back-link:hover {
+  color: #5ECE7B;
+}
+
+.product-page .back-arrow {
+  font-size: 1.25rem;
+  line-height: 1;
 }
 
 .product-gallery {

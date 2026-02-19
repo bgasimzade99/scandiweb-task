@@ -46,11 +46,23 @@ export default function CartOverlay({ onClose }) {
       <div className="cart-overlay-backdrop" onClick={onClose} />
       <div className="cart-overlay">
         <div className="cart-content">
-          <h2 className="cart-title">
-            My Bag{totalItems > 0 && (
-              <span className="cart-title-count">, {totalItems} {totalItems === 1 ? 'item' : 'items'}</span>
-            )}
-          </h2>
+          <div className="cart-header">
+            <h2 className="cart-title">
+              My Bag{totalItems > 0 && (
+                <span className="cart-title-count">, {totalItems} {totalItems === 1 ? 'item' : 'items'}</span>
+              )}
+            </h2>
+            <button
+              type="button"
+              className="cart-close-btn"
+              onClick={onClose}
+              aria-label="Close cart"
+            >
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M15 5L5 15M5 5l10 10" />
+              </svg>
+            </button>
+          </div>
           <div className="cart-items">
             {cart.map((item) => (
               <div key={item.key} className="cart-item">
