@@ -4,7 +4,8 @@ FROM php:8.2-cli-alpine
 # Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Extensions for GraphQL (json PHP 8'de built-in)
+# Extensions: pdo, pdo_mysql, mbstring (json built-in PHP 8)
+ARG CACHEBUST=1
 RUN docker-php-ext-install pdo pdo_mysql mbstring
 
 WORKDIR /app
