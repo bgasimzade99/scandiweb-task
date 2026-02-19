@@ -111,6 +111,8 @@
 .product-details {
   flex: 1;
   max-width: 292px;
+  position: relative;
+  z-index: 2;
 }
 
 .product-details .product-name {
@@ -159,6 +161,8 @@
   align-items: center;
   justify-content: center;
   transition: background 0.2s, color 0.2s;
+  pointer-events: auto;
+  touch-action: manipulation;
 }
 
 .attr-option:hover {

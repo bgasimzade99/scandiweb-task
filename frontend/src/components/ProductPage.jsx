@@ -42,7 +42,9 @@ export default function ProductPage() {
       attr.items?.some((item) => selectedAttrs[attr.name] === item.value)
     );
 
-  const handleAttrSelect = (attrName, value) => {
+  const handleAttrSelect = (e, attrName, value) => {
+    e.preventDefault();
+    e.stopPropagation();
     setSelectedAttrs((prev) => ({ ...prev, [attrName]: value }));
   };
 
@@ -119,7 +121,7 @@ export default function ProductPage() {
                       className={`attr-option ${
                         isSelected ? 'selected' : ''
                       } ${attr.type === 'swatch' ? 'swatch' : ''}`}
-                      onClick={() => handleAttrSelect(attr.name, item.value)}
+                      onClick={(e) => handleAttrSelect(e, attr.name, item.value)}
                       style={
                         attr.type === 'swatch'
                           ? { backgroundColor: item.value }

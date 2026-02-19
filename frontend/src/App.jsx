@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client/react';
 import { client } from './graphql/client';
 import { CartProvider, useCart } from './context/CartContext';
@@ -8,21 +9,25 @@ import ProductPage from './components/ProductPage';
 import './App.css';
 
 function AppContent() {
-  const { cartOverlayOpen } = useCart();
+  const { cartOverlayOpen, setCartOverlayOpen } = useCart();
+  const location = useLocation();
+
+  useEffect(() => {
+    setCartOverlayOpen(false);
+  }, [location.pathname, setCartOverlayOpen]);
+
   return (
-    <BrowserRouter>
-      <div className={`app ${cartOverlayOpen ? 'cart-overlay-open' : ''}`}>
-        <Header />
-        <div className="main-content">
-              <Routes>
-                <Route path="/" element={<Navigate to="/category/all" replace />} />
-                <Route path="/category/:category" element={<ProductList />} />
-                <Route path="/product/:id" element={<ProductPage />} />
-                <Route path="*" element={<Navigate to="/category/all" replace />} />
-              </Routes>
-        </div>
+    <div className={`app ${cartOverlayOpen ? 'cart-overlay-open' : ''}`}>
+      <Header />
+      <div className="main-content">
+        <Routes>
+          <Route path="/" element={<Navigate to="/category/all" replace />} />
+          <Route path="/category/:category" element={<ProductList />} />
+          <Route path="/product/:id" element={<ProductPage />} />
+          <Route path="*" element={<Navigate to="/category/all" replace />} />
+        </Routes>
       </div>
-    </BrowserRouter>
+    </div>
   );
 }
 
@@ -30,7 +35,9 @@ function App() {
   return (
     <ApolloProvider client={client}>
       <CartProvider>
-        <AppContent />
+        <BrowserRouter>
+          <AppContent />
+        </BrowserRouter>
       </CartProvider>
     </ApolloProvider>
   );
