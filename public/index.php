@@ -30,7 +30,21 @@ if ($path === '//') {
 
 $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
     $r->get('/', fn() => json_encode(['status' => 'ok', 'endpoints' => ['/health', '/graphql']]));
-    $r->get('/health', fn() => json_encode(['status' => 'ok', 'php' => PHP_VERSION]));
+    $r->get('/health', function () {
+        $dbCfg = \App\Config\Database::getConfigForHealth();
+        $connected = \App\Config\Database::testConnection();
+        return json_encode([
+            'status' => 'ok',
+            'php' => PHP_VERSION,
+            'db' => [
+                'host' => $dbCfg['host'],
+                'port' => $dbCfg['port'],
+                'user' => $dbCfg['user'],
+                'password' => $dbCfg['password_masked'],
+            ],
+            'connected' => $connected,
+        ]);
+    });
     $r->get('/graphql-ping', function () {
         header('Content-Type: application/json');
         try {

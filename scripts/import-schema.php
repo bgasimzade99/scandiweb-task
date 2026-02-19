@@ -5,15 +5,10 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->safeLoad();
 
-$host = $_ENV['DB_HOST'] ?? $_ENV['MYSQLHOST'] ?? 'localhost';
-$dbname = $_ENV['DB_NAME'] ?? $_ENV['MYSQLDATABASE'] ?? 'scandiweb';
-$user = $_ENV['DB_USER'] ?? $_ENV['MYSQLUSER'] ?? 'root';
-$pass = $_ENV['DB_PASS'] ?? $_ENV['MYSQLPASSWORD'] ?? '';
-
-// Create DB if not exists (connect without dbname first)
-$dsn = "mysql:host={$host};charset=utf8mb4";
-$pdoInit = new PDO($dsn, $user, $pass, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-$pdoInit->exec("CREATE DATABASE IF NOT EXISTS `{$dbname}`");
+$cfg = \App\Config\Database::getConfig();
+$dsn = sprintf('mysql:host=%s;port=%d;charset=utf8mb4', $cfg['host'], $cfg['port']);
+$pdoInit = new PDO($dsn, $cfg['user'], $cfg['pass'], [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+$pdoInit->exec("CREATE DATABASE IF NOT EXISTS `{$cfg['dbname']}`");
 $pdoInit = null;
 
 $pdo = \App\Config\Database::getConnection();
