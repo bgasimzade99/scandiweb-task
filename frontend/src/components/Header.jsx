@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom';
+import { Link, NavLink, useMatch } from 'react-router-dom';
 import { useQuery } from '@apollo/client/react';
 import { GET_CATEGORIES } from '../graphql/queries';
 import { useCart } from '../context/CartContext';
@@ -35,29 +35,30 @@ function CartIcon({ className }) {
 export default function Header() {
   const { data } = useQuery(GET_CATEGORIES);
   const { totalItems, cartOverlayOpen, setCartOverlayOpen } = useCart();
-  const { category } = useParams();
+  const match = useMatch('/category/:category');
 
   const categories = data?.categories ?? [];
-  const activeCategory = category ?? (categories[0]?.name ?? 'all');
+  const activeCategory = match?.params?.category ?? 'all';
 
   return (
     <>
       <header className="header">
         <nav className="nav-categories">
-          {categories.map((cat) => (
-            <Link
-              key={cat.id}
-              to={`/category/${cat.name}`}
-              className={`nav-link ${activeCategory === cat.name ? 'active' : ''}`}
-              data-testid={
-                activeCategory === cat.name
-                  ? 'active-category-link'
-                  : 'category-link'
-              }
-            >
-              {cat.name}
-            </Link>
-          ))}
+          {categories.map((cat) => {
+            const isActive = activeCategory === cat.name;
+            return (
+              <NavLink
+                key={cat.id}
+                to={`/category/${cat.name}`}
+                className={({ isActive: navActive }) =>
+                  `nav-link ${navActive ? 'active' : ''}`
+                }
+                data-testid={isActive ? 'active-category-link' : 'category-link'}
+              >
+                {cat.name}
+              </NavLink>
+            );
+          })}
         </nav>
         <Link to="/category/all" className="header-logo">
           <BagIcon className="header-logo-icon" />

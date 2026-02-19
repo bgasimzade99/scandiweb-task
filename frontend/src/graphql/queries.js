@@ -70,6 +70,9 @@ export const GET_PRODUCT = gql`
 
 export const PLACE_ORDER = gql`
   mutation PlaceOrder($order: PlaceOrderInput!) {
-    placeOrder(order: $order)
+    placeOrder(order: $order) {
+      success
+      orderId
+    }
   }
 `;

@@ -42,6 +42,8 @@
   font-weight: 600;
   color: #5ECE7B;
   border-bottom-color: #5ECE7B;
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 .header-logo {

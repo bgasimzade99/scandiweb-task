@@ -99,11 +99,19 @@ class SchemaBuilder
             ],
         ]);
 
+        $placeOrderPayload = new ObjectType([
+            'name' => 'PlaceOrderPayload',
+            'fields' => [
+                'success' => ['type' => Type::nonNull(Type::boolean())],
+                'orderId' => ['type' => Type::nonNull(Type::int())],
+            ],
+        ]);
+
         $mutationType = new ObjectType([
             'name' => 'Mutation',
             'fields' => [
                 'placeOrder' => [
-                    'type' => Type::int(),
+                    'type' => $placeOrderPayload,
                     'args' => [
                         'order' => ['type' => Type::nonNull($placeOrderInput)],
                     ],
@@ -144,7 +152,8 @@ class SchemaBuilder
                             ];
                         }
 
-                        return $orderModel->create($orderDetails, $total);
+                        $orderId = $orderModel->create($orderDetails, $total);
+                        return ['success' => true, 'orderId' => $orderId];
                     },
                 ],
             ],

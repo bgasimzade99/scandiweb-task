@@ -1,11 +1,15 @@
-/* Frame 14 - Cart overlay container */
+/* Grey backdrop - covers page except header (80px) */
 .cart-overlay-backdrop {
   position: fixed;
-  inset: 0;
+  top: 80px;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: rgba(57, 55, 72, 0.22);
   z-index: 100;
 }
 
+/* Right drawer - fixed to screen */
 .cart-overlay {
   position: fixed;
   top: 0;
@@ -17,22 +21,20 @@
   z-index: 101;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 32px 16px;
-  gap: 32px;
+  padding: 24px 16px;
   overflow-y: auto;
   box-shadow: -4px 0 20px rgba(0, 0, 0, 0.08);
 }
 
-/* Frame 12 - Main content wrapper */
 .cart-overlay .cart-content {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: stretch;
   width: 100%;
   max-width: 293px;
-  gap: 32px;
+  margin: 0 auto;
+  gap: 24px;
+  flex: 1;
 }
 
 /* My Bag, 3 items */
@@ -48,41 +50,40 @@
   font-weight: 400;
 }
 
-/* Frame 11 - Cart items list */
+/* Cart items list */
 .cart-items {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 40px;
+  gap: 24px;
   width: 100%;
+  flex: 1;
+  overflow-y: auto;
 }
 
-/* Frame 9 - Single cart item row */
+/* Cart item: left = name+price+attrs (not clickable), right = qty column + image */
 .cart-item {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
+  justify-content: space-between;
   gap: 8px;
   width: 100%;
   padding: 0;
 }
 
-/* Frame 8 - Product info + attributes */
 .cart-item-info {
   display: flex;
   flex-direction: column;
   flex: 1;
   min-width: 0;
+  pointer-events: none;
 }
 
-/* Frame 7 - Text + attrs column */
 .cart-item-info-inner {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 8px;
-  flex: 1;
-  min-width: 0;
 }
 
 /* Frame 3 - Title + price */
@@ -173,13 +174,22 @@
   box-sizing: border-box;
 }
 
-/* Frame 4 - Quantity controls */
+/* Right column: qty controls + image */
+.cart-item-right {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* Qty controls: + top, amount middle, - bottom */
 .cart-item-actions {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  gap: 32px;
+  gap: 8px;
   width: 24px;
   flex-shrink: 0;
 }
@@ -221,14 +231,16 @@
   flex: none;
 }
 
-/* Group 405 - Total row */
+/* Bottom row: Cart Total + VIEW BAG + PLACE ORDER, full width */
 .cart-footer {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 32px;
+  align-items: stretch;
+  gap: 16px;
   width: 100%;
-  max-width: 293px;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid #E5E5E5;
 }
 
 .cart-total-row {
@@ -255,7 +267,6 @@
   color: #1D1F22;
 }
 
-/* Frame 13 - Buttons */
 .cart-footer-buttons {
   display: flex;
   flex-direction: row;
@@ -280,6 +291,7 @@
   cursor: pointer;
   text-decoration: none;
   transition: background 0.2s, color 0.2s;
+  min-width: 0;
 }
 
 .cart-footer-buttons .view-bag-btn:hover {
@@ -304,6 +316,7 @@
   text-transform: uppercase;
   cursor: pointer;
   transition: opacity 0.2s;
+  min-width: 0;
 }
 
 .place-order-btn:hover:not(:disabled) {
@@ -313,4 +326,11 @@
 .place-order-btn:disabled {
   background: #ccc;
   cursor: not-allowed;
+}
+
+.cart-order-error {
+  margin: 0;
+  font-size: 14px;
+  color: #d32f2f;
+  width: 100%;
 }

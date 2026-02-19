@@ -67,11 +67,28 @@ curl -X POST https://YOUR-APP.up.railway.app/graphql \
 
 ## Environment Variables (Railway)
 
-| Variable  | Required | Description    |
-|-----------|----------|----------------|
-| `DB_HOST` | Yes      | MySQL host     |
-| `DB_NAME` | Yes      | MySQL database |
-| `DB_USER` | Yes      | MySQL user     |
-| `DB_PASS` | Yes      | MySQL password |
+**Preferred** (Railway MySQL plugin):
 
-Add as Variable References from the MySQL service.
+| Variable            | Description                                         |
+|---------------------|-----------------------------------------------------|
+| `MYSQL_PUBLIC_URL`  | Full URL `mysql://user:pass@host:port/db` (best)    |
+| `MYSQLHOST`         | MySQL host                                          |
+| `MYSQLPORT`         | MySQL port (default 3306)                           |
+| `MYSQLDATABASE`     | Database name                                       |
+| `MYSQLUSER`         | Username                                            |
+| `MYSQLPASSWORD`     | Password                                            |
+
+**Alternative:** `DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASS`.
+
+Use Railway's "Add Reference" to link variables from the MySQL service. Never use literal `${VAR}` syntax—values must be expanded.
+
+## Manual DB Setup (after deploy)
+
+The app starts without a database. Run migrations manually once the DB is available:
+
+```bash
+railway run php scripts/import-schema.php
+railway run php scripts/seed-db.php
+```
+
+Or via Railway shell / one-off run.

@@ -82,6 +82,28 @@ This outputs the React app to `public/`. The PHP backend serves:
 
 Ensure `.htaccess` is in the project root. Document root should point to the project folder. Requests are rewritten to `public/index.php`.
 
+### Railway / Production Deployment
+
+The web server **starts without requiring a database**. Run these CLI commands manually after the DB is available:
+
+```bash
+php scripts/import-schema.php   # Import schema + base data
+php scripts/seed-db.php         # Seed from data.json
+```
+
+**Environment variables** (Railway prefers these):
+
+| Variable            | Description                              |
+|---------------------|------------------------------------------|
+| `MYSQL_PUBLIC_URL`  | Full URL: `mysql://user:pass@host:port/db` (parsed automatically) |
+| `MYSQLHOST`         | MySQL host (if not using URL)            |
+| `MYSQLPORT`         | MySQL port (default 3306)                |
+| `MYSQLDATABASE`     | Database name                            |
+| `MYSQLUSER`         | Username                                 |
+| `MYSQLPASSWORD`     | Password                                 |
+
+Alternatively: `DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASS`. **Never** use unexpanded template syntax (`${VAR}`) in variables—use Railway's "Add Reference" to link MySQL service variables.
+
 ## Project Structure
 
 ```

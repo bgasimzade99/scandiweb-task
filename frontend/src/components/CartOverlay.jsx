@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useMutation } from '@apollo/client/react';
@@ -7,15 +8,24 @@ import './CartOverlay.css';
 
 export default function CartOverlay({ onClose }) {
   const { cart, updateQuantity, totalPrice, totalItems, clearCart } = useCart();
+  const [orderError, setOrderError] = useState(null);
   const [placeOrder, { loading }] = useMutation(PLACE_ORDER, {
-    onCompleted: () => {
-      clearCart();
-      onClose();
+    onCompleted: (data) => {
+      if (data?.placeOrder?.success) {
+        clearCart();
+        localStorage.removeItem('scandiweb-cart');
+        setOrderError(null);
+        onClose();
+      }
+    },
+    onError: (err) => {
+      setOrderError(err.message || 'Failed to place order');
     },
   });
 
   const handlePlaceOrder = () => {
     if (cart.length === 0) return;
+    setOrderError(null);
     placeOrder({
       variables: {
         order: {
@@ -83,28 +93,30 @@ export default function CartOverlay({ onClose }) {
                     ))}
                   </div>
                 </div>
-                <div className="cart-item-actions">
-                  <button
-                    className="qty-btn"
-                    onClick={() => updateQuantity(item.key, 1)}
-                    data-testid="cart-item-amount-increase"
-                  >
-                    +
-                  </button>
-                  <span className="cart-item-qty" data-testid="cart-item-amount">{item.quantity}</span>
-                  <button
-                    className="qty-btn"
-                    onClick={() => updateQuantity(item.key, -1)}
-                    data-testid="cart-item-amount-decrease"
-                  >
-                    −
-                  </button>
+                <div className="cart-item-right">
+                  <div className="cart-item-actions">
+                    <button
+                      className="qty-btn"
+                      onClick={() => updateQuantity(item.key, 1)}
+                      data-testid="cart-item-amount-increase"
+                    >
+                      +
+                    </button>
+                    <span className="cart-item-qty" data-testid="cart-item-amount">{item.quantity}</span>
+                    <button
+                      className="qty-btn"
+                      onClick={() => updateQuantity(item.key, -1)}
+                      data-testid="cart-item-amount-decrease"
+                    >
+                      −
+                    </button>
+                  </div>
+                  <img
+                    src={item.gallery?.[0]}
+                    alt={item.name}
+                    className="cart-item-image"
+                  />
                 </div>
-                <img
-                  src={item.gallery?.[0]}
-                  alt={item.name}
-                  className="cart-item-image"
-                />
               </div>
             ))}
           </div>
@@ -113,16 +125,19 @@ export default function CartOverlay({ onClose }) {
             <span className="cart-total-label">Total</span>
             <span className="cart-total-amount">{symbol}{totalPrice.toFixed(2)}</span>
           </div>
+          {orderError && (
+            <p className="cart-order-error" role="alert">{orderError}</p>
+          )}
           <div className="cart-footer-buttons">
             <Link to="/category/all" className="view-bag-btn" onClick={onClose}>
-              View Bag
+              VIEW BAG
             </Link>
             <button
               className="place-order-btn"
               onClick={handlePlaceOrder}
               disabled={cart.length === 0 || loading}
             >
-              {loading ? 'Placing...' : 'Place Order'}
+              {loading ? 'Placing...' : 'PLACE ORDER'}
             </button>
           </div>
         </div>

@@ -36,6 +36,9 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) 
         return json_encode([
             'status' => 'ok',
             'php' => PHP_VERSION,
+            'hostUsed' => $dbCfg['hostUsed'],
+            'portUsed' => $dbCfg['portUsed'],
+            'envSnapshotMasked' => $dbCfg['envSnapshotMasked'],
             'db' => [
                 'host' => $dbCfg['host'],
                 'port' => $dbCfg['port'],
