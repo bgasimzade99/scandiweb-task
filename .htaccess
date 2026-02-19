@@ -1,0 +1,7 @@
+RewriteEngine On
+# Serve static assets from public/
+RewriteRule ^assets/(.*)$ /public/assets/$1 [L]
+# All other non-file requests to index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ public/index.php [QSA,L]

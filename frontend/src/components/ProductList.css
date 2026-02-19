@@ -1,0 +1,43 @@
+/* Category page - Figma spec */
+.product-list-page {
+  position: relative;
+  padding: 0 101px 10rem;
+  background: #FFFFFF;
+}
+
+.category-title {
+  font-family: 'Raleway', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 42px;
+  line-height: 160%;
+  color: #1D1F22;
+  margin: 0 0 5.5rem 0;
+  text-transform: capitalize;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 386px);
+  gap: 103px 40px;
+  justify-content: center;
+}
+
+@media (max-width: 1280px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 386px);
+  }
+}
+
+@media (max-width: 900px) {
+  .product-grid {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+}
+
+.loading,
+.error {
+  padding: 4rem;
+  text-align: center;
+}

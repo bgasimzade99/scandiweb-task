@@ -1,0 +1,316 @@
+/* Frame 14 - Cart overlay container */
+.cart-overlay-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(57, 55, 72, 0.22);
+  z-index: 100;
+}
+
+.cart-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 325px;
+  max-width: 100%;
+  height: 100vh;
+  background: #FFFFFF;
+  z-index: 101;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 32px 16px;
+  gap: 32px;
+  overflow-y: auto;
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Frame 12 - Main content wrapper */
+.cart-overlay .cart-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  max-width: 293px;
+  gap: 32px;
+}
+
+/* My Bag, 3 items */
+.cart-title {
+  font-family: 'Raleway', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 160%;
+  color: #1D1F22;
+}
+
+.cart-title .cart-title-count {
+  font-weight: 400;
+}
+
+/* Frame 11 - Cart items list */
+.cart-items {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 40px;
+  width: 100%;
+}
+
+/* Frame 9 - Single cart item row */
+.cart-item {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+  padding: 0;
+}
+
+/* Frame 8 - Product info + attributes */
+.cart-item-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Frame 7 - Text + attrs column */
+.cart-item-info-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Frame 3 - Title + price */
+.cart-item-name {
+  font-family: 'Raleway', sans-serif;
+  font-weight: 300;
+  font-size: 18px;
+  line-height: 160%;
+  color: #1D1F22;
+  margin: 0;
+}
+
+.cart-item-price {
+  font-family: 'Raleway', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 160%;
+  color: #1D1F22;
+  margin: 0;
+}
+
+/* Frame 6 - Size / text attribute */
+.cart-item-attr {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+}
+
+.cart-item-attr:last-child {
+  margin: 0;
+}
+
+.attr-name {
+  font-family: 'Raleway', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 16px;
+  color: #1D1F22;
+}
+
+/* Frame 5 - Attribute options row */
+.attr-options {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+/* Size buttons - 24x24 */
+.attr-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  box-sizing: border-box;
+  border: 1px solid #1D1F22;
+  font-family: 'Source Sans Pro', 'Raleway', sans-serif;
+  font-size: 14px;
+  line-height: 160%;
+  color: #1D1F22;
+  background: rgba(255, 255, 255, 0.2);
+  cursor: default;
+  pointer-events: none;
+}
+
+.attr-option.selected {
+  background: #1D1F22;
+  color: #FFFFFF;
+}
+
+/* Frame 16/15 - Color swatches - 16px or 20px */
+.attr-option.swatch {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  padding: 0;
+  border: 1px solid #1D1F22;
+}
+
+.attr-option.swatch.selected {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  border: 1px solid #5ECE7B;
+  box-sizing: border-box;
+}
+
+/* Frame 4 - Quantity controls */
+.cart-item-actions {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 32px;
+  width: 24px;
+  flex-shrink: 0;
+}
+
+.qty-btn {
+  width: 24px;
+  height: 24px;
+  box-sizing: border-box;
+  border: 1px solid #1D1F22;
+  background: #fff;
+  color: #1D1F22;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s;
+}
+
+.qty-btn:hover {
+  background: #1D1F22;
+  color: #fff;
+}
+
+.cart-item-qty {
+  font-family: 'Raleway', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 160%;
+  color: #1D1F22;
+}
+
+/* Product image - 121x167 */
+.cart-item-image {
+  width: 121px;
+  height: 167px;
+  object-fit: contain;
+  background: #fff;
+  flex: none;
+}
+
+/* Group 405 - Total row */
+.cart-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 32px;
+  width: 100%;
+  max-width: 293px;
+}
+
+.cart-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.cart-total-label {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 18px;
+  color: #1D1F22;
+}
+
+.cart-total-amount {
+  font-family: 'Raleway', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 160%;
+  text-align: right;
+  color: #1D1F22;
+}
+
+/* Frame 13 - Buttons */
+.cart-footer-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  width: 100%;
+}
+
+.cart-footer-buttons .view-bag-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 32px;
+  height: 43px;
+  background: #fff;
+  color: #1D1F22;
+  border: 1px solid #1D1F22;
+  font-family: 'Raleway', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+}
+
+.cart-footer-buttons .view-bag-btn:hover {
+  background: #1D1F22;
+  color: #fff;
+}
+
+.place-order-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 32px;
+  height: 43px;
+  background: #5ECE7B;
+  color: #FFFFFF;
+  border: none;
+  font-family: 'Raleway', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 120%;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.place-order-btn:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.place-order-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
