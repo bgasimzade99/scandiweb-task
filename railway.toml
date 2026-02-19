@@ -1,9 +1,0 @@
-# Railway PHP backend deployment - Dockerfile kullan (Nixpacks PHP 7.4 hatası)
-[build]
-builder = "DOCKERFILE"
-dockerfilePath = "Dockerfile"
-
-[deploy]
-startCommand = "php -S 0.0.0.0:${PORT:-8000} -t public"
-restartPolicyType = "on_failure"
-restartPolicyMaxRetries = 10

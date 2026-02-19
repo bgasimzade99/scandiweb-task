@@ -15,9 +15,11 @@
 
 1. [Railway](https://railway.app) → New Project → Deploy from GitHub
 2. Repo seçin
-3. **MySQL ekleyin:** New → Database → MySQL
-4. **Environment variables:** DB_HOST, DB_NAME, DB_USER, DB_PASS (MySQL connection string'den)
-5. Deploy otomatik başlar
+3. **ÖNEMLİ - Builder:** Settings → Build → **Builder: "Dockerfile"** seçin (Nixpacks değil!)
+4. **Root Directory:** `/` veya boş bırakın
+5. **MySQL ekleyin:** New → Database → MySQL
+6. **Environment variables:** DB_HOST, DB_NAME, DB_USER, DB_PASS (MySQL connection string'den)
+7. Deploy otomatik başlar
 6. Settings → Generate Domain → URL'i kopyalayın
 7. Netlify'a `VITE_GRAPHQL_URI` = `https://xxx.railway.app/graphql` ekleyin
 
