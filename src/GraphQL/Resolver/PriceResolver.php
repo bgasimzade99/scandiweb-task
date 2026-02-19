@@ -16,9 +16,12 @@ class PriceResolver
         if (!$price) {
             return [];
         }
-        $currency = is_string($price['currency']) 
-            ? json_decode($price['currency'], true) 
-            : $price['currency'];
+        $currency = is_string($price['currency'] ?? '') 
+            ? (json_decode($price['currency'], true) ?: ['label' => 'USD', 'symbol' => '$']) 
+            : ($price['currency'] ?? ['label' => 'USD', 'symbol' => '$']);
+        if (!is_array($currency)) {
+            $currency = ['label' => 'USD', 'symbol' => '$'];
+        }
         return [[
             'amount' => (float) $price['amount'],
             'currency' => $currency,

@@ -31,6 +31,16 @@ if ($path === '//') {
 $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
     $r->get('/', fn() => json_encode(['status' => 'ok', 'endpoints' => ['/health', '/graphql']]));
     $r->get('/health', fn() => json_encode(['status' => 'ok']));
+    $r->get('/graphql-ping', function () {
+        header('Content-Type: application/json');
+        try {
+            $schema = \App\GraphQL\SchemaBuilder::build();
+            $result = \GraphQL\GraphQL::executeQuery($schema, '{ __typename }');
+            return json_encode($result->toArray());
+        } catch (\Throwable $e) {
+            return json_encode(['errors' => [['message' => $e->getMessage(), 'code' => $e::class]]]);
+        }
+    });
     $r->post('/graphql', [App\Controller\GraphQL::class, 'handle']);
 });
 $routeInfo = $dispatcher->dispatch($_SERVER['REQUEST_METHOD'], $path);

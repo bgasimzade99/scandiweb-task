@@ -33,7 +33,8 @@ class ProductType extends ObjectType
                     'type' => Type::listOf(Type::string()),
                     'resolve' => static function (array $product) {
                         $gallery = $product['gallery'] ?? '[]';
-                        return is_string($gallery) ? json_decode($gallery, true) : $gallery;
+                        $decoded = is_string($gallery) ? (json_decode($gallery, true) ?? []) : ($gallery ?? []);
+                        return is_array($decoded) ? $decoded : [];
                     },
                 ],
                 'prices' => [
