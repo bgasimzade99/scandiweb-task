@@ -17,6 +17,7 @@ class GraphQL
      */
     public static function handle(array $routeVars = []): string
     {
+        ob_start();
         try {
             $schema = SchemaBuilder::build();
 
@@ -45,6 +46,7 @@ class GraphQL
             ];
         }
 
+        ob_end_clean();
         header('Content-Type: application/json; charset=UTF-8');
         header('Access-Control-Allow-Origin: *');
         return json_encode($output);
