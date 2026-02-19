@@ -38,7 +38,7 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) 
             $result = \GraphQL\GraphQL::executeQuery($schema, '{ __typename }');
             return json_encode($result->toArray());
         } catch (\Throwable $e) {
-            return json_encode(['errors' => [['message' => $e->getMessage(), 'code' => $e::class]]]);
+            return json_encode(['errors' => [['message' => $e->getMessage(), 'code' => get_class($e)]]]);
         }
     });
     $r->post('/graphql', [App\Controller\GraphQL::class, 'handle']);

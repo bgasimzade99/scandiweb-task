@@ -41,7 +41,7 @@ class GraphQL
                 'errors' => [
                     [
                         'message' => $e->getMessage(),
-                        'extensions' => ['code' => $e::class],
+                        'extensions' => ['code' => get_class($e)],
                     ],
                 ],
             ];
