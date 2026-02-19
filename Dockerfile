@@ -12,10 +12,10 @@ RUN apk add --no-cache oniguruma-dev \
 WORKDIR /app
 
 COPY composer.json composer.lock ./
-RUN composer update --no-dev --optimize-autoloader --no-interaction
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 COPY . .
 
 EXPOSE 8000
-# Railway sets PORT env
-CMD php -S 0.0.0.0:${PORT:-8000} -t public
+# Railway sets PORT env. Router script required: without it, /graphql returns 404 (no public/graphql file)
+CMD php -S 0.0.0.0:${PORT:-8000} -t public public/index.php

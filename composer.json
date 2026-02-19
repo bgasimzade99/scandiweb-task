@@ -11,5 +11,10 @@
         "nikic/fast-route": "^1.3",
         "vlucas/phpdotenv": "^5.5",
         "webonyx/graphql-php": "^15.2"
+    },
+    "scripts": {
+        "schema:import": "php scripts/import-schema.php",
+        "seed": "php scripts/seed-db.php",
+        "db:setup": ["@schema:import", "@seed"]
     }
 }

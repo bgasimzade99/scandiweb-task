@@ -5,17 +5,19 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->safeLoad();
 
-// CORS: Netlify frontend'den GraphQL istekleri icin
+// CORS: allow Netlify frontend and preflight (must run before any output)
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Access-Control-Max-Age: 86400');
+
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    header('Access-Control-Allow-Origin: *');
-    header('Access-Control-Allow-Methods: POST, OPTIONS');
-    header('Access-Control-Allow-Headers: Content-Type');
-    header('Access-Control-Max-Age: 86400');
     http_response_code(204);
     exit;
 }
 
 $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
+    $r->get('/health', fn() => json_encode(['status' => 'ok']));
     $r->post('/graphql', [App\Controller\GraphQL::class, 'handle']);
 });
 
@@ -24,20 +26,26 @@ $routeInfo = $dispatcher->dispatch($_SERVER['REQUEST_METHOD'], $path);
 
 switch ($routeInfo[0]) {
     case FastRoute\Dispatcher::NOT_FOUND:
-        if ($_SERVER['REQUEST_METHOD'] === 'GET' && file_exists(__DIR__ . '/index.html')) {
+        if ($_SERVER['REQUEST_METHOD'] === 'GET' && $path === '/' && file_exists(__DIR__ . '/index.html')) {
             readfile(__DIR__ . '/index.html');
         } else {
             http_response_code(404);
-            echo 'Not Found';
+            header('Content-Type: application/json');
+            echo json_encode(['error' => 'Not Found']);
         }
         break;
     case FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
         http_response_code(405);
-        echo 'Method Not Allowed';
+        header('Content-Type: application/json');
+        echo json_encode(['error' => 'Method Not Allowed']);
         break;
     case FastRoute\Dispatcher::FOUND:
         $handler = $routeInfo[1];
         $vars = $routeInfo[2];
-        echo call_user_func_array($handler, [$vars]);
+        $result = call_user_func_array($handler, [$vars]);
+        if (is_string($result) && str_starts_with($result, '{')) {
+            header('Content-Type: application/json; charset=UTF-8');
+        }
+        echo $result;
         break;
 }
