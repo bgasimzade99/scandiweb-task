@@ -1,5 +1,5 @@
-# PHP 8.2 - Nixpacks PHP 7.4 hatasını bypass
-FROM php:8.2-cli-alpine
+# PHP 8.3 - graphql-php v15.30 may use PHP 8.3 features
+FROM php:8.3-cli-alpine
 
 # Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
