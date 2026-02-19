@@ -5,7 +5,7 @@ FROM php:8.2-cli-alpine
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # Extensions for GraphQL
-RUN docker-php-ext-install pdo pdo_mysql json mbstring
+RUN docker-php-ext-install pdo pdo_mysql mbstring
 
 WORKDIR /app
 
