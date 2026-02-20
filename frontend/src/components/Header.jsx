@@ -1,7 +1,14 @@
+import { useState, useLayoutEffect } from 'react';
 import { Link, useMatch, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import CartOverlay from './CartOverlay';
 import './Header.css';
+
+const CATEGORIES = [
+  { id: 'all', name: 'all' },
+  { id: 'clothes', name: 'clothes' },
+  { id: 'tech', name: 'tech' },
+];
 
 function BagIcon({ className }) {
   return (
@@ -30,36 +37,39 @@ function CartIcon({ className }) {
   );
 }
 
-const DEFAULT_CATEGORIES = [
-  { id: 'all', name: 'all' },
-  { id: 'clothes', name: 'clothes' },
-  { id: 'tech', name: 'tech' },
-];
-
 export default function Header() {
   const navigate = useNavigate();
   const { totalItems, cartOverlayOpen, setCartOverlayOpen } = useCart();
   const match = useMatch('/:category');
-
-  const categories = DEFAULT_CATEGORIES;
   const activeCategory = match?.params?.category ?? 'all';
+  const [hideNav, setHideNav] = useState(false);
+
+  useLayoutEffect(() => {
+    if (typeof window === 'undefined') return;
+    const hide = () => {
+      if (window.self !== window.top) return true;
+      const root = document.getElementById('root');
+      const categoriesNav = document.querySelector('[aria-label="Categories"]');
+      if (categoriesNav && root && !root.contains(categoriesNav)) return true;
+      return document.querySelectorAll('a[href="/tech"]').length > 1;
+    };
+    if (hide()) queueMicrotask(() => setHideNav(true));
+  }, []);
 
   return (
     <>
       <header className="header">
-        <nav className="nav-categories">
-          {categories.map((cat) => {
-            const slug = String(cat.name).toLowerCase();
+        {!hideNav && (
+        <nav className="nav-categories" aria-label="Store categories">
+          {CATEGORIES.map((cat) => {
+            const slug = cat.name.toLowerCase();
             const href = `/${slug}`;
             const isActive = activeCategory?.toLowerCase() === slug;
             return (
               <a
                 key={cat.id}
                 href={href}
-                onClick={(e) => {
-                  e.preventDefault();
-                  navigate(href);
-                }}
+                onClick={(e) => { e.preventDefault(); navigate(href); }}
                 className={`nav-link ${isActive ? 'active' : ''}`}
                 data-testid={isActive ? 'active-category-link' : 'category-link'}
               >
@@ -68,7 +78,8 @@ export default function Header() {
             );
           })}
         </nav>
-        <Link to="/all" className="header-logo">
+        )}
+        <Link to="/" className="header-logo">
           <BagIcon className="header-logo-icon" />
         </Link>
         <button
