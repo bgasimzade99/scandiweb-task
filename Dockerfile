@@ -25,4 +25,4 @@ COPY . .
 EXPOSE 8080
 
 # Serve from public, route via index.php
-CMD ["sh", "-c", "php -S 0.0.0.0:${PORT:-8080} -t public public/index.php"]
+CMD ["sh", "-c", "php scripts/migrate-gallery.php && php scripts/seed-db.php && exec php -S 0.0.0.0:${PORT:-8080} -t public public/index.php"]
