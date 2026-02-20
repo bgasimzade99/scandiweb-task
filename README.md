@@ -87,8 +87,10 @@ Ensure `.htaccess` is in the project root. Document root should point to the pro
 The web server **starts without requiring a database**. Run these CLI commands manually after the DB is available:
 
 ```bash
-php scripts/import-schema.php   # Import schema + base data
-php scripts/seed-db.php         # Seed from data.json
+php scripts/import-schema.php   # Import schema + base data (full galleries)
+php scripts/seed-db.php         # Seed from data.json (UPSERT: updates existing products)
+php scripts/seed-db.php --products-only   # Update products only (galleries, prices) without wiping
+php scripts/migrate-gallery.php # Add gallery column if missing (legacy DBs)
 ```
 
 **Environment variables** (Railway prefers these):

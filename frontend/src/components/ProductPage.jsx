@@ -53,7 +53,8 @@ export default function ProductPage() {
     addToCart(product, selectedAttrs, { openOverlay: true });
   };
 
-  const gallery = product.gallery ?? [];
+  const gallery = Array.isArray(product.gallery) ? product.gallery : [];
+  const mainImage = gallery[0] || null;
   const description = product.description ? parse(product.description) : null;
 
   return (
@@ -67,7 +68,7 @@ export default function ProductPage() {
           <div className="gallery-thumbs">
             {gallery.map((src, i) => (
               <button
-                key={i}
+                key={`${src}-${i}`}
                 type="button"
                 className={`thumb ${i === galleryIndex ? 'active' : ''}`}
                 onClick={() => setGalleryIndex(i)}
@@ -77,8 +78,13 @@ export default function ProductPage() {
             ))}
           </div>
           <div className="gallery-main">
-            <img src={gallery[galleryIndex]} alt={product.name} />
-            {gallery.length > 1 && (
+            {mainImage && (
+              <img
+                src={gallery[galleryIndex] || mainImage}
+                alt={product.name}
+              />
+            )}
+            {gallery.length > 1 && mainImage && (
               <>
                 <button
                   className="gallery-arrow prev"

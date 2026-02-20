@@ -34,7 +34,8 @@ class ProductType extends ObjectType
                     'resolve' => static function (array $product) {
                         $gallery = $product['gallery'] ?? '[]';
                         $decoded = is_string($gallery) ? (json_decode($gallery, true) ?? []) : ($gallery ?? []);
-                        return is_array($decoded) ? $decoded : [];
+                        $arr = is_array($decoded) ? $decoded : [];
+                        return array_values(array_filter($arr, 'is_string'));
                     },
                 ],
                 'prices' => [

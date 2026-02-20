@@ -9,7 +9,7 @@ export default function ProductCard({ product, onQuickAdd }) {
   const { addToCart } = useCart();
   const inStock = product.in_stock;
   const price = product.prices?.[0];
-  const mainImage = product.gallery?.[0];
+  const mainImage = (Array.isArray(product.gallery) ? product.gallery[0] : product.gallery?.[0]) || null;
 
   const getDefaultAttrs = () => {
     const selected = {};
@@ -42,7 +42,7 @@ export default function ProductCard({ product, onQuickAdd }) {
     >
       <div className="product-card-inner">
       <div className="product-image-wrap">
-        <img src={mainImage} alt={product.name} className="product-image" />
+        <img src={mainImage} alt={product.name} className="product-image" loading="lazy" />
         {!inStock && (
           <div className="out-of-stock-badge">out of stock</div>
         )}

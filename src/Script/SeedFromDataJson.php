@@ -21,7 +21,7 @@ class SeedFromDataJson
         $this->pdo = Database::getConnection();
     }
 
-    public function run(): void
+    public function run(bool $productsOnly = false): void
     {
         $baseDir = dirname(__DIR__, 2);
         $jsonPath = $baseDir . '/data.json';
@@ -46,8 +46,22 @@ class SeedFromDataJson
             }
         }
 
-        $categoryMap = $this->seedCategories($categories);
+        if ($productsOnly) {
+            $categoryMap = $this->getCategoryMap();
+        } else {
+            $categoryMap = $this->seedCategories($categories);
+        }
         $this->seedProducts($products, $categoryMap);
+    }
+
+    private function getCategoryMap(): array
+    {
+        $stmt = $this->pdo->query('SELECT id, name FROM categories');
+        $map = [];
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $map[$row['name']] = (int) $row['id'];
+        }
+        return $map;
     }
 
     private function seedCategories(array $categories): array
@@ -77,11 +91,19 @@ class SeedFromDataJson
     private function seedProducts(array $products, array $categoryMap): void
     {
         $prodStmt = $this->pdo->prepare(
-            'INSERT INTO products (id, name, in_stock, description, category_id, brand, gallery) VALUES (?, ?, ?, ?, ?, ?, ?)'
+            'INSERT INTO products (id, name, in_stock, description, category_id, brand, gallery) VALUES (?, ?, ?, ?, ?, ?, ?)
+             ON DUPLICATE KEY UPDATE
+             name = VALUES(name), in_stock = VALUES(in_stock), description = VALUES(description),
+             category_id = VALUES(category_id), brand = VALUES(brand), gallery = VALUES(gallery)'
         );
+        $priceDelStmt = $this->pdo->prepare('DELETE FROM prices WHERE product_id = ?');
         $priceStmt = $this->pdo->prepare(
             'INSERT INTO prices (amount, currency, product_id) VALUES (?, ?, ?)'
         );
+        $attrDelStmt = $this->pdo->prepare(
+            'DELETE av FROM attribute_values av INNER JOIN attributes a ON av.attribute_id = a.id WHERE a.product_id = ?'
+        );
+        $attrProdDelStmt = $this->pdo->prepare('DELETE FROM attributes WHERE product_id = ?');
         $attrStmt = $this->pdo->prepare(
             'INSERT INTO attributes (name, type, product_id) VALUES (?, ?, ?)'
         );
@@ -93,7 +115,8 @@ class SeedFromDataJson
             $categoryName = $p['category'] ?? 'all';
             $categoryId = $categoryMap[$categoryName] ?? 1;
             $inStock = ($p['inStock'] ?? true) ? 1 : 0;
-            $gallery = json_encode($p['gallery'] ?? []);
+            $galleryUrls = $p['gallery'] ?? [];
+            $gallery = json_encode($galleryUrls);
             $description = $p['description'] ?? '';
 
             $prodStmt->execute([
@@ -106,11 +129,15 @@ class SeedFromDataJson
                 $gallery,
             ]);
 
+            $priceDelStmt->execute([$p['id']]);
             $price = $p['prices'][0] ?? null;
             if ($price) {
                 $currency = json_encode($price['currency'] ?? ['label' => 'USD', 'symbol' => '$']);
                 $priceStmt->execute([$price['amount'] ?? 0, $currency, $p['id']]);
             }
+
+            $attrDelStmt->execute([$p['id']]);
+            $attrProdDelStmt->execute([$p['id']]);
 
             foreach ($p['attributes'] ?? [] as $attr) {
                 $attrStmt->execute([$attr['name'] ?? '', $attr['type'] ?? 'text', $p['id']]);
