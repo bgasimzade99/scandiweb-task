@@ -151,7 +151,7 @@ export default function CartOverlay({ onClose }) {
             <p className="cart-order-error" role="alert">{orderError}</p>
           )}
           <div className="cart-footer-buttons">
-            <Link to="/category/all" className="view-bag-btn" onClick={onClose}>
+            <Link to="/all" className="view-bag-btn" onClick={onClose}>
               VIEW BAG
             </Link>
             <button

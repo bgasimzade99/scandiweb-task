@@ -119,7 +119,7 @@ export default function ProductPage() {
   return (
     <>
       <main className="product-page" data-testid="product-page">
-        <Link to="/category/all" className="back-link">
+        <Link to="/all" className="back-link">
           <span className="back-arrow">←</span>
           All products
         </Link>

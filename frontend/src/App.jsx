@@ -21,10 +21,10 @@ function AppContent() {
       <Header />
       <div className="main-content">
         <Routes>
-          <Route path="/" element={<Navigate to="/category/all" replace />} />
-          <Route path="/category/:category" element={<ProductList />} />
+          <Route path="/" element={<Navigate to="/all" replace />} />
           <Route path="/product/:id" element={<ProductPage />} />
-          <Route path="*" element={<Navigate to="/category/all" replace />} />
+          <Route path="/:category" element={<ProductList />} />
+          <Route path="*" element={<Navigate to="/all" replace />} />
         </Routes>
       </div>
     </div>

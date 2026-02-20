@@ -1,6 +1,4 @@
-import { Link, NavLink, useMatch } from 'react-router-dom';
-import { useQuery } from '@apollo/client/react';
-import { GET_CATEGORIES } from '../graphql/queries';
+import { Link, useMatch, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import CartOverlay from './CartOverlay';
 import './Header.css';
@@ -39,11 +37,11 @@ const DEFAULT_CATEGORIES = [
 ];
 
 export default function Header() {
-  const { data } = useQuery(GET_CATEGORIES);
+  const navigate = useNavigate();
   const { totalItems, cartOverlayOpen, setCartOverlayOpen } = useCart();
-  const match = useMatch('/category/:category');
+  const match = useMatch('/:category');
 
-  const categories = (data?.categories?.length > 0 ? data.categories : DEFAULT_CATEGORIES);
+  const categories = DEFAULT_CATEGORIES;
   const activeCategory = match?.params?.category ?? 'all';
 
   return (
@@ -51,29 +49,33 @@ export default function Header() {
       <header className="header">
         <nav className="nav-categories">
           {categories.map((cat) => {
-            const isActive = activeCategory === cat.name;
+            const slug = String(cat.name).toLowerCase();
+            const href = `/${slug}`;
+            const isActive = activeCategory?.toLowerCase() === slug;
             return (
-              <NavLink
+              <a
                 key={cat.id}
-                to={`/category/${cat.name}`}
-                className={({ isActive: navActive }) =>
-                  `nav-link ${navActive ? 'active' : ''}`
-                }
+                href={href}
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate(href);
+                }}
+                className={`nav-link ${isActive ? 'active' : ''}`}
                 data-testid={isActive ? 'active-category-link' : 'category-link'}
               >
                 {cat.name}
-              </NavLink>
+              </a>
             );
           })}
         </nav>
-        <Link to="/category/all" className="header-logo">
+        <Link to="/all" className="header-logo">
           <BagIcon className="header-logo-icon" />
         </Link>
         <button
           className="cart-btn"
-          onClick={() => setCartOverlayOpen(true)}
+          onClick={() => setCartOverlayOpen((prev) => !prev)}
           data-testid="cart-btn"
-          aria-label="Open cart"
+          aria-label={cartOverlayOpen ? 'Close cart' : 'Open cart'}
         >
           <span className="cart-icon-wrap">
             <CartIcon className="cart-icon" />

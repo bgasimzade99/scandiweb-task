@@ -119,6 +119,14 @@ Alternatively: `DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASS`. **Never** use unexpan
 └── scandiweb.sql      # Database schema + seed data
 ```
 
+## Netlify Deployment (Frontend)
+
+The React SPA is deployed on Netlify. SPA routing is configured via `frontend/public/_redirects` (copied to `dist/` during build) and `netlify.toml`.
+
+**Live URL for AutoQA:** `https://scadiwebix.netlify.app`
+
+> **Note:** The working Netlify site is `scadiwebix` (note the spelling). Use this URL for AutoQA submission. Both `/` and `/all` load correctly.
+
 ## Auto QA Testing
 
-Test the application at http://165.227.98.170/ before submission. Ensure all `data-testid` attributes are present as specified in the task.
+Test the application at http://165.227.98.170/ before submission. Submit your Netlify URL (e.g. `https://scandiwebix.netlify.app`). Ensure all `data-testid` attributes are present as specified in the task.

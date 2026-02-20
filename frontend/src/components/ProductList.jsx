@@ -19,7 +19,7 @@ export default function ProductList() {
     <main className="product-list-page">
       <div className="category-header">
         {showBack && (
-          <Link to="/category/all" className="back-link">
+          <Link to="/all" className="back-link">
             <span className="back-arrow">←</span>
             All
           </Link>
