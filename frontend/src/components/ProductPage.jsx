@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { useQuery } from '@apollo/client/react';
 import parse from 'html-react-parser';
 import { GET_PRODUCT } from '../graphql/queries';
@@ -18,29 +18,25 @@ export default function ProductPage() {
 
   const { addToCart } = useCart();
   const product = data?.product;
+  const prevProductIdRef = useRef(null);
 
-  useEffect(() => {
-    if (product?.attributes) {
-      const defaults = {};
-      product.attributes.forEach((attr) => {
-        if (attr.items?.[0]) {
-          defaults[attr.name] = attr.items[0].value;
-        }
-      });
-      setSelectedAttrs(defaults);
-    } else {
-      setSelectedAttrs({});
-    }
-  }, [product?.id]);
+  if (product?.id !== prevProductIdRef.current) {
+    prevProductIdRef.current = product?.id ?? null;
+    const defaults = product?.attributes
+      ? product.attributes.reduce((acc, attr) => {
+          if (attr.items?.[0]) acc[attr.name] = attr.items[0].value;
+          return acc;
+        }, {})
+      : {};
+    setSelectedAttrs(defaults);
+  }
 
-  if (loading) return <div className="loading">Loading...</div>;
-  if (error || !product) return <div className="error">Product not found</div>;
-
-  const allSelected =
-    !product.attributes?.length ||
-    product.attributes.every((attr) =>
-      attr.items?.some((item) => selectedAttrs[attr.name] === item.value)
-    );
+  const allSelected = !product
+    ? false
+    : !product.attributes?.length ||
+      product.attributes.every((attr) =>
+        attr.items?.some((item) => selectedAttrs[attr.name] === item.value)
+      );
 
   const handleAttrSelect = (e, attrName, value) => {
     e.preventDefault();
@@ -53,9 +49,9 @@ export default function ProductPage() {
     addToCart(product, selectedAttrs, { openOverlay: true });
   };
 
-  const gallery = Array.isArray(product.gallery) ? product.gallery : [];
+  const gallery = product && Array.isArray(product.gallery) ? product.gallery : [];
   const mainImage = gallery[0] || null;
-  const description = product.description ? parse(product.description) : null;
+  const description = product?.description ? parse(product.description) : null;
 
   return (
     <>
@@ -81,7 +77,7 @@ export default function ProductPage() {
             {mainImage && (
               <img
                 src={gallery[galleryIndex] || mainImage}
-                alt={product.name}
+                alt={product?.name ?? ''}
               />
             )}
             {gallery.length > 1 && mainImage && (
@@ -107,64 +103,68 @@ export default function ProductPage() {
           </div>
         </div>
         <div className="product-details">
-          <h1 className="product-name">{product.name}</h1>
-          <p className="product-brand">{product.brand}</p>
-          {product.attributes?.map((attr) => (
-            <div
-              key={attr.id}
-              className="product-attr"
-              data-testid={`product-attribute-${toKebab(attr.name)}`}
-            >
-              <span className="attr-label">{attr.name}:</span>
-              <div className="attr-options">
-                {attr.items?.map((item) => {
-                  const optKebab = toKebab(item.display_value ?? item.value);
-                  const isSelected = selectedAttrs[attr.name] === item.value;
-                  return (
-                    <button
-                      key={item.id}
-                      type="button"
-                      className={`attr-option ${
-                        isSelected ? 'selected' : ''
-                      } ${attr.type === 'swatch' ? 'swatch' : ''}`}
-                      onClick={(e) => handleAttrSelect(e, attr.name, item.value)}
-                      style={
-                        attr.type === 'swatch'
-                          ? { backgroundColor: item.value }
-                          : {}
-                      }
-                      data-testid={`product-attribute-${toKebab(attr.name)}-${optKebab}${isSelected ? '-selected' : ''}`}
-                    >
-                      {attr.type === 'text' ? item.display_value : ''}
-                    </button>
-                  );
-                })}
+          {loading && <div className="loading">Loading...</div>}
+          {error && !product && <div className="error">Product not found</div>}
+          {product && (
+            <>
+              <h1 className="product-name">{product.name}</h1>
+              <p className="product-brand">{product.brand}</p>
+              {product.attributes?.map((attr) => (
+                <div
+                  key={attr.id}
+                  className="product-attr"
+                  data-testid={`product-attribute-${toKebab(attr.name)}`}
+                >
+                  <span className="attr-label">{attr.name}:</span>
+                  <div className="attr-options">
+                    {attr.items?.map((item) => {
+                      const optKebab = toKebab(item.display_value ?? item.value);
+                      const isSelected = selectedAttrs[attr.name] === item.value;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          className={`attr-option ${
+                            isSelected ? 'selected' : ''
+                          } ${attr.type === 'swatch' ? 'swatch' : ''}`}
+                          onClick={(e) => handleAttrSelect(e, attr.name, item.value)}
+                          style={
+                            attr.type === 'swatch'
+                              ? { backgroundColor: item.value }
+                              : {}
+                          }
+                          data-testid={`product-attribute-${toKebab(attr.name)}-${optKebab}${isSelected ? '-selected' : ''}`}
+                        >
+                          {attr.type === 'text' ? item.display_value : ''}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+              <div className="product-price-section">
+                <span className="product-price-label">Price:</span>
+                <p className="product-price-value">
+                  {product.prices?.[0]?.currency?.symbol}
+                  {product.prices?.[0]?.amount?.toFixed(2)}
+                </p>
               </div>
-            </div>
-          ))}
-          <div className="product-price-section">
-            <span className="product-price-label">Price:</span>
-            <p className="product-price-value">
-              {product.prices?.[0]?.currency?.symbol}
-              {product.prices?.[0]?.amount?.toFixed(2)}
-            </p>
-          </div>
+            </>
+          )}
           <button
             className="add-to-cart-btn"
             onClick={handleAddToCart}
-            disabled={!product.in_stock || !allSelected}
+            disabled={!product?.in_stock || !allSelected}
             data-testid="add-to-cart"
           >
-            {product.in_stock ? 'Add to cart' : 'Out of Stock'}
+            {product?.in_stock ? 'Add to cart' : 'Out of Stock'}
           </button>
-          {description && (
-            <div
-              className="product-description"
-              data-testid="product-description"
-            >
-              {description}
-            </div>
-          )}
+          <div
+            className="product-description"
+            data-testid="product-description"
+          >
+            {description}
+          </div>
         </div>
       </main>
     </>

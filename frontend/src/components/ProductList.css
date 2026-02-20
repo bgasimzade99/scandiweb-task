@@ -68,3 +68,15 @@
   padding: 4rem;
   text-align: center;
 }
+
+.product-card-placeholder .product-image-wrap {
+  min-height: 330px;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.product-card-placeholder .product-name,
+.product-card-placeholder .product-price {
+  margin: 0;
+  height: 1em;
+  background: rgba(0, 0, 0, 0.06);
+}

@@ -32,12 +32,18 @@ function CartIcon({ className }) {
   );
 }
 
+const DEFAULT_CATEGORIES = [
+  { id: 'all', name: 'all' },
+  { id: 'clothes', name: 'clothes' },
+  { id: 'tech', name: 'tech' },
+];
+
 export default function Header() {
   const { data } = useQuery(GET_CATEGORIES);
   const { totalItems, cartOverlayOpen, setCartOverlayOpen } = useCart();
   const match = useMatch('/category/:category');
 
-  const categories = data?.categories ?? [];
+  const categories = (data?.categories?.length > 0 ? data.categories : DEFAULT_CATEGORIES);
   const activeCategory = match?.params?.category ?? 'all';
 
   return (
