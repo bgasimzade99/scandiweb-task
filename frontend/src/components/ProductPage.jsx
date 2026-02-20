@@ -7,16 +7,8 @@ import { useCart } from '../context/CartContext';
 import { toKebab } from '../utils/testId';
 import './ProductPage.css';
 
-function getDefaultAttrs(product) {
-  if (!product?.attributes) return {};
-  return product.attributes.reduce((acc, attr) => {
-    if (attr.items?.[0]) acc[attr.name] = attr.items[0].value;
-    return acc;
-  }, {});
-}
-
 function ProductDetailsForm({ product, onAddToCart }) {
-  const [selectedAttrs, setSelectedAttrs] = useState(() => getDefaultAttrs(product));
+  const [selectedAttrs, setSelectedAttrs] = useState({});
 
   const allSelected = !product.attributes?.length ||
     product.attributes.every((attr) =>
@@ -49,8 +41,13 @@ function ProductDetailsForm({ product, onAddToCart }) {
           <span className="attr-label">{attr.name}:</span>
           <div className="attr-options">
             {attr.items?.map((item) => {
-              const optKebab = toKebab(item.display_value ?? item.value);
+              const displayVal = item.display_value ?? item.displayValue;
+              const optPart = (displayVal ?? item.value ?? '').toString().trim();
+              const optTestId = optPart
+                ? optPart.replace(/\s+/g, '-')
+                : toKebab(String(item.value ?? ''));
               const isSelected = selectedAttrs[attr.name] === item.value;
+              const baseTestId = `product-attribute-${toKebab(attr.name)}-${optTestId}`;
               return (
                 <button
                   key={item.id}
@@ -64,7 +61,7 @@ function ProductDetailsForm({ product, onAddToCart }) {
                       ? { backgroundColor: item.value }
                       : {}
                   }
-                  data-testid={`product-attribute-${toKebab(attr.name)}-${optKebab}${isSelected ? '-selected' : ''}`}
+                  data-testid={`${baseTestId}${isSelected ? '-selected' : ''}`}
                 >
                   {attr.type === 'text' ? item.display_value : ''}
                 </button>
