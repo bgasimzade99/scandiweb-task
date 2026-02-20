@@ -29,7 +29,7 @@ export default function ProductList() {
       <div className="product-grid" data-testid="product-grid">
         {loading
           ? Array.from({ length: PLACEHOLDER_COUNT }, (_, i) => (
-              <div key={`placeholder-${i}`} className="product-card product-card-placeholder" data-testid={`product-placeholder-${i}`}>
+              <div key={`placeholder-${i}`} className="product-card product-card-placeholder" data-testid={`plp-skeleton-${i}`}>
                 <div className="product-card-inner">
                   <div className="product-image-wrap" />
                   <div className="product-info">
