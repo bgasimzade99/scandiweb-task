@@ -44,7 +44,7 @@ export default function ProductCard({ product, onQuickAdd }) {
       <div className="product-image-wrap">
         <img src={mainImage} alt={product.name} className="product-image" loading="lazy" />
         {!inStock && (
-          <div className="out-of-stock-badge">out of stock</div>
+          <div className="out-of-stock-badge">Out of Stock</div>
         )}
         {inStock && hovered && (
           <button

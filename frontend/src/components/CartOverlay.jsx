@@ -44,7 +44,7 @@ export default function CartOverlay({ onClose }) {
   return (
     <>
       <div className="cart-overlay-backdrop" onClick={onClose} />
-      <div className="cart-overlay">
+      <div className="cart-overlay" data-testid="cart-overlay">
         <div className="cart-content">
           <div className="cart-header">
             <h2 className="cart-title">

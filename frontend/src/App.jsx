@@ -17,7 +17,7 @@ function AppContent() {
   }, [location.pathname, setCartOverlayOpen]);
 
   return (
-    <div className={`app ${cartOverlayOpen ? 'cart-overlay-open' : ''}`}>
+    <div className={`app ${cartOverlayOpen ? 'cart-overlay-open' : ''}`} data-testid="app">
       <Header />
       <div className="main-content">
         <Routes>

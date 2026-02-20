@@ -38,7 +38,7 @@ export default function ProductList() {
         )}
         <h1 className="category-title">{category ?? 'all'}</h1>
       </div>
-      <div className="product-grid">
+      <div className="product-grid" data-testid="product-grid">
         {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
