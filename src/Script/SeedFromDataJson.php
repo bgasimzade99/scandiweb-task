@@ -34,7 +34,17 @@ class SeedFromDataJson
 
         $data = json_decode(file_get_contents($jsonPath), true);
         $categories = $data['data']['categories'] ?? [];
-        $products = $data['data']['products'] ?? [];
+        $productsRaw = $data['data']['products'] ?? [];
+
+        $seenIds = [];
+        $products = [];
+        foreach ($productsRaw as $p) {
+            $id = $p['id'] ?? '';
+            if ($id !== '' && !isset($seenIds[$id])) {
+                $seenIds[$id] = true;
+                $products[] = $p;
+            }
+        }
 
         $categoryMap = $this->seedCategories($categories);
         $this->seedProducts($products, $categoryMap);
