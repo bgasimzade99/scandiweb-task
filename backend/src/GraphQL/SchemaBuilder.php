@@ -11,6 +11,8 @@ use App\Repository\CategoryRepository;
 use App\Repository\PriceRepository;
 use App\Repository\ProductRepository;
 use App\Service\OrderService;
+use App\Service\OrderValidationException;
+use GraphQL\Error\ClientAware;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
@@ -134,12 +136,19 @@ class SchemaBuilder
                     'resolve' => static function ($root, array $args) use ($orderService) {
                         $input = $args['order'] ?? null;
                         if (!is_array($input)) {
-                            throw new \RuntimeException('Order input is required.');
+                            throw new OrderValidationException('Order input is required.');
                         }
                         if (!isset($input['products']) || !is_array($input['products'])) {
-                            throw new \RuntimeException('Order products must be a non-empty array.');
+                            throw new OrderValidationException('Order products must be a non-empty array.');
                         }
-                        return $orderService->placeOrder($input);
+                        try {
+                            return $orderService->placeOrder($input);
+                        } catch (\Throwable $e) {
+                            if ($e instanceof ClientAware && $e->isClientSafe()) {
+                                throw $e;
+                            }
+                            throw new OrderValidationException('Unable to place order. Please try again.');
+                        }
                     },
                 ],
             ],
