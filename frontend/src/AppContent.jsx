@@ -13,11 +13,6 @@ export default function AppContent() {
     setCartOverlayOpen(false);
   }, [location.pathname, setCartOverlayOpen]);
 
-  useEffect(() => {
-    document.body.classList.toggle('cart-overlay-open', cartOverlayOpen);
-    return () => document.body.classList.remove('cart-overlay-open');
-  }, [cartOverlayOpen]);
-
   return (
     <div className={`app ${cartOverlayOpen ? 'cart-overlay-open' : ''}`} data-testid="app">
       <Header />

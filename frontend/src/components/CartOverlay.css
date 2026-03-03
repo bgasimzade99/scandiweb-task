@@ -171,18 +171,24 @@
   margin: 0;
 }
 
-/* Attributes - not clickable */
-.cart-item-attr {
+/* Attributes - grouped under product, label + options aligned */
+.cart-item-attrs {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
+  gap: 4px;
   margin: 0;
   pointer-events: none;
 }
 
-.cart-item-attr:last-child {
+.cart-item-attr {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
   margin: 0;
+  flex-wrap: nowrap;
+  min-width: 0;
+  pointer-events: none;
 }
 
 .attr-name {
@@ -191,14 +197,15 @@
   font-size: 14px;
   line-height: 16px;
   color: #1D1F22;
+  flex-shrink: 0;
 }
 
-/* Frame 5 - Attribute options row */
 .attr-options {
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  align-items: center;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
 /* Size buttons - 24x24 */

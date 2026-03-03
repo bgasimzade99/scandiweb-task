@@ -82,37 +82,41 @@ export default function CartOverlay({ onClose }) {
                     <p className="cart-item-price">
                       {symbol}{item.prices?.[0]?.amount?.toFixed(2)}
                     </p>
-                    {item.attributes?.map((attr) => (
-                      <div
-                        key={attr.id}
-                        className="cart-item-attr"
-                        data-testid={`cart-item-attribute-${toKebab(attr.name)}`}
-                      >
-                        <span className="attr-name">{attr.name}:</span>
-                        <span className="attr-options">
-                          {attr.items?.map((opt) => {
-                            const isSelected =
-                              item.selectedAttrs?.[attr.name] === opt.value;
-                            const optKebab = toKebab(opt.display_value ?? opt.value);
-                            const attrKebab = toKebab(attr.name);
-                            return (
-                              <span
-                                key={opt.id}
-                                className={`attr-option ${isSelected ? 'selected' : ''} ${attr.type === 'swatch' ? 'swatch' : ''}`}
-                                data-testid={`cart-item-attribute-${attrKebab}-${optKebab}${isSelected ? '-selected' : ''}`}
-                                style={
-                                  attr.type === 'swatch'
-                                    ? { backgroundColor: opt.value }
-                                    : {}
-                                }
-                              >
-                                {attr.type === 'text' ? opt.display_value : ''}
-                              </span>
-                            );
-                          })}
-                        </span>
+                    {item.attributes && item.attributes.length > 0 && (
+                      <div className="cart-item-attrs">
+                        {item.attributes.map((attr) => (
+                          <div
+                            key={attr.id}
+                            className="cart-item-attr"
+                            data-testid={`cart-item-attribute-${toKebab(attr.name)}`}
+                          >
+                            <span className="attr-name">{attr.name}:</span>
+                            <span className="attr-options">
+                              {attr.items?.map((opt) => {
+                                const isSelected =
+                                  item.selectedAttrs?.[attr.name] === opt.value;
+                                const optKebab = toKebab(opt.display_value ?? opt.value);
+                                const attrKebab = toKebab(attr.name);
+                                return (
+                                  <span
+                                    key={opt.id}
+                                    className={`attr-option ${isSelected ? 'selected' : ''} ${attr.type === 'swatch' ? 'swatch' : ''}`}
+                                    data-testid={`cart-item-attribute-${attrKebab}-${optKebab}${isSelected ? '-selected' : ''}`}
+                                    style={
+                                      attr.type === 'swatch'
+                                        ? { backgroundColor: opt.value }
+                                        : {}
+                                    }
+                                  >
+                                    {attr.type === 'text' ? opt.display_value : ''}
+                                  </span>
+                                );
+                              })}
+                            </span>
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    )}
                   </div>
                 </div>
                 <div className="cart-item-right">
