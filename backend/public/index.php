@@ -60,9 +60,10 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) 
     });
     $r->get('/products-check', function () {
         header('Content-Type: application/json');
+        $fullQuery = 'query { products(category: "all") { id name in_stock brand gallery prices { amount currency { label symbol } } attributes { id name type items { id value display_value } } } }';
         try {
             $schema = \App\GraphQL\SchemaBuilder::build();
-            $result = \GraphQL\GraphQL::executeQuery($schema, 'query { products { id name } }');
+            $result = \GraphQL\GraphQL::executeQuery($schema, $fullQuery);
             $arr = $result->toArray();
             if (!empty($arr['errors'])) {
                 return json_encode(['ok' => false, 'errors' => $arr['errors']]);
