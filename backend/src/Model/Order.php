@@ -24,7 +24,7 @@ class Order
 
         try {
             $stmt = $this->pdo->prepare(
-                'INSERT INTO orders (status, total, created_at) VALUES (?, ?, NOW())'
+                'INSERT INTO orders (order_status, total, created_at) VALUES (?, ?, NOW())'
             );
             $stmt->execute(['received', $total]);
             $orderId = (int) $this->pdo->lastInsertId();
