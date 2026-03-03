@@ -58,6 +58,21 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) 
             return json_encode(['errors' => [['message' => $e->getMessage(), 'code' => get_class($e)]]]);
         }
     });
+    $r->get('/products-check', function () {
+        header('Content-Type: application/json');
+        try {
+            $schema = \App\GraphQL\SchemaBuilder::build();
+            $result = \GraphQL\GraphQL::executeQuery($schema, 'query { products { id name } }');
+            $arr = $result->toArray();
+            if (!empty($arr['errors'])) {
+                return json_encode(['ok' => false, 'errors' => $arr['errors']]);
+            }
+            $count = count($arr['data']['products'] ?? []);
+            return json_encode(['ok' => true, 'productsCount' => $count]);
+        } catch (\Throwable $e) {
+            return json_encode(['ok' => false, 'error' => $e->getMessage(), 'class' => get_class($e)]);
+        }
+    });
     $r->post('/graphql', [App\Controller\GraphQL::class, 'handle']);
 });
 $routeInfo = $dispatcher->dispatch($_SERVER['REQUEST_METHOD'], $path);

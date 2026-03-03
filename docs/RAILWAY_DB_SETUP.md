@@ -2,6 +2,8 @@
 
 **Hata:** `mysql:host=loca...` = Backend localhost'a bağlanıyor → DB değişkenleri Backend servisine EKLENMEMİŞ.
 
+**"Internal server error" ürünlerde:** DB bağlı ama tablolar boş/eksik → `scandiweb.sql` import edilmemiş.
+
 `DB_*` değişkenleri **MySQL servisinde değil**, **Backend (PHP) servisinde** olmalı.
 
 ## Adımlar
@@ -19,4 +21,10 @@
 
 **Reference ile:** Backend → Variables → New Variable → **Add Reference** → MySQL servisini seç → MYSQLHOST’u seç → Variable adını `DB_HOST` yap. Aynı şekilde diğerlerini ekle.
 
-4. Backend için **Redeploy** çalıştır.
+4. **MySQL tabloları:** Railway MySQL → **Data** veya **Query** sekmesi → `backend/scandiweb.sql` içeriğini çalıştır (tablolar + seed).
+
+5. Backend için **Redeploy** çalıştır.
+
+## Kontrol
+- `GET /health` → `connected: true` = DB OK.
+- `GET /products-check` → `ok: true` = ürünler yüklü. `ok: false` = `error` alanında gerçek hata.
