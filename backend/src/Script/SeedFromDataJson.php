@@ -97,7 +97,7 @@ class SeedFromDataJson
         );
         $priceDelStmt = $this->pdo->prepare('DELETE FROM prices WHERE product_id = ?');
         $priceStmt = $this->pdo->prepare(
-            'INSERT INTO prices (amount, currency, product_id) VALUES (?, ?, ?)'
+            'INSERT INTO prices (amount, currency_label, currency_symbol, product_id) VALUES (?, ?, ?, ?)'
         );
         $attrDelStmt = $this->pdo->prepare(
             'DELETE av FROM attribute_values av INNER JOIN attributes a ON av.attribute_id = a.id WHERE a.product_id = ?'
@@ -115,7 +115,7 @@ class SeedFromDataJson
             $categoryId = $categoryMap[$categoryName] ?? 1;
             $inStock = ($p['inStock'] ?? true) ? 1 : 0;
             $galleryUrls = $p['gallery'] ?? [];
-            $gallery = json_encode($galleryUrls);
+            $gallery = is_array($galleryUrls) ? implode('|', array_filter($galleryUrls, 'is_string')) : '';
             $description = $p['description'] ?? '';
 
             $prodStmt->execute([
@@ -131,8 +131,10 @@ class SeedFromDataJson
             $priceDelStmt->execute([$p['id']]);
             $price = $p['prices'][0] ?? null;
             if ($price) {
-                $currency = json_encode($price['currency'] ?? ['label' => 'USD', 'symbol' => '$']);
-                $priceStmt->execute([$price['amount'] ?? 0, $currency, $p['id']]);
+                $curr = $price['currency'] ?? ['label' => 'USD', 'symbol' => '$'];
+                $label = is_array($curr) ? ($curr['label'] ?? 'USD') : 'USD';
+                $symbol = is_array($curr) ? ($curr['symbol'] ?? '$') : '$';
+                $priceStmt->execute([$price['amount'] ?? 0, $label, $symbol, $p['id']]);
             }
 
             $attrDelStmt->execute([$p['id']]);

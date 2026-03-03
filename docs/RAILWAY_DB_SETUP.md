@@ -22,6 +22,7 @@
 **Reference ile:** Backend → Variables → New Variable → **Add Reference** → MySQL servisini seç → MYSQLHOST’u seç → Variable adını `DB_HOST` yap. Aynı şekilde diğerlerini ekle.
 
 4. **MySQL tabloları:** Railway MySQL → **Data** veya **Query** sekmesi → `backend/scandiweb.sql` içeriğini çalıştır (tablolar + seed).
+   - *Eski DB varsa (JSON kolonlarla):* `php backend/scripts/migrate-remove-json.php` çalıştır (no-JSON policy için).
 
 5. Backend için **Redeploy** çalıştır.
 
