@@ -1,47 +1,57 @@
 # Scandiweb Junior Full Stack Developer Test
 
-A simple eCommerce website with product listing and cart functionality, built for the Scandiweb Junior Full Stack Developer assessment.
+E-commerce product listing and cart built for the Scandiweb assessment.
 
 ## Tech Stack
 
-- **Backend**: PHP 8.x, MySQL, GraphQL (no frameworks)
+- **Backend**: PHP 8.x, MySQL, GraphQL (no framework)
 - **Frontend**: React, Vite, Apollo Client, React Router
 
-## Requirements
+## Prerequisites
 
 - PHP 7.4+ (8.x recommended)
 - MySQL 5.6+
 - Node.js 18+
 - Composer
 
+## Project Structure
+
+```
+├── backend/           # PHP GraphQL API
+│   ├── src/
+│   ├── scripts/
+│   ├── public/
+│   ├── scandiweb.sql
+│   └── data.json
+├── frontend/          # React SPA (Vite)
+└── docs/              # Additional documentation
+```
+
 ## Setup
 
 ### 1. Database
 
-Create a MySQL database, import the schema, then seed from data.json:
+Create a MySQL database and import the schema:
 
 ```bash
 mysql -u root -p -e "CREATE DATABASE scandiweb;"
-mysql -u root -p scandiweb < scandiweb.sql
-
-# Seed/update from Scandiweb data.json (place in project root or src/Controller/)
-php scripts/seed-db.php
+mysql -u root -p scandiweb < backend/scandiweb.sql
 ```
 
 ### 2. Backend
 
 ```bash
-# Install dependencies
+cd backend
 composer install
-
-# Copy environment file
 cp .env.example .env
+# Edit .env with your DB credentials: DB_HOST, DB_NAME, DB_USER, DB_PASS
+```
 
-# Edit .env with your database credentials
-# DB_HOST=localhost
-# DB_NAME=scandiweb
-# DB_USER=root
-# DB_PASS=
+Seed from data.json (updates products, prices, attributes):
+
+```bash
+cd backend
+php scripts/seed-db.php
 ```
 
 ### 3. Frontend
@@ -51,82 +61,68 @@ cd frontend
 npm install
 ```
 
-### 4. Development
+### 4. Run Development
 
-**Terminal 1 - PHP backend:**
+**Terminal 1 – Backend:**
 ```bash
+cd backend
 php -S localhost:8000 -t public
 ```
-(Run from project root)
 
-**Terminal 2 - Frontend (with proxy to backend):**
+**Terminal 2 – Frontend:**
 ```bash
 cd frontend
 npm run dev
 ```
 
-Visit http://localhost:5173
+Visit http://localhost:5173. The Vite dev server proxies `/graphql` to the backend.
 
-### 5. Production Build
+### Alternative: Mock API (no PHP)
 
 ```bash
 cd frontend
-npm run build
+npm run start
 ```
 
-This outputs the React app to `public/`. The PHP backend serves:
-- `POST /graphql` - GraphQL API
-- `GET *` - React SPA (index.html)
+Uses Node mock server + Vite. Requires `backend/data.json` for mock data.
 
-### Apache Deployment
+## Environment Variables
 
-Ensure `.htaccess` is in the project root. Document root should point to the project folder. Requests are rewritten to `public/index.php`.
+| Location | Variables |
+|----------|-----------|
+| `backend/.env` | `DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASS` (or `MYSQL_PUBLIC_URL`) |
+| `frontend/.env` | `VITE_GRAPHQL_URI` (production backend URL, e.g. Netlify deploy) |
 
-### Railway / Production Deployment
+## Production / Deployment
 
-The web server **starts without requiring a database**. Run these CLI commands manually after the DB is available:
+- **Frontend**: Netlify (see `netlify.toml`, builds from `frontend/`)
+- **Backend**: Railway or Render (Dockerfile or `render.yaml` with `rootDir: backend`)
+
+After backend deploy, run migrations if needed:
 
 ```bash
-php scripts/import-schema.php   # Import schema + base data (full galleries)
-php scripts/seed-db.php         # Seed from data.json (UPSERT: updates existing products)
-php scripts/seed-db.php --products-only   # Update products only (galleries, prices) without wiping
-php scripts/migrate-gallery.php # Add gallery column if missing (legacy DBs)
+cd backend
+php scripts/import-schema.php   # Fresh schema
+php scripts/seed-db.php         # Seed from data.json
+php scripts/migrate-orders-normalized.php  # For existing DBs with old orders
 ```
 
-**Environment variables** (Railway prefers these):
+## Troubleshooting
 
-| Variable            | Description                              |
-|---------------------|------------------------------------------|
-| `MYSQL_PUBLIC_URL`  | Full URL: `mysql://user:pass@host:port/db` (parsed automatically) |
-| `MYSQLHOST`         | MySQL host (if not using URL)            |
-| `MYSQLPORT`         | MySQL port (default 3306)                |
-| `MYSQLDATABASE`     | Database name                            |
-| `MYSQLUSER`         | Username                                 |
-| `MYSQLPASSWORD`     | Password                                 |
+**"PDOException: could not find driver"** – The `pdo_mysql` extension is not loaded.
 
-Alternatively: `DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASS`. **Never** use unexpanded template syntax (`${VAR}`) in variables—use Railway's "Add Reference" to link MySQL service variables.
+- **Linux**: `sudo apt install php-mysql` (or `php8.x-mysql`), restart PHP.
+- **macOS (brew)**: `brew install php` and ensure `extension=pdo_mysql` in `php.ini`.
+- **Windows (XAMPP/WAMP/Laragon)**: Uncomment `extension=pdo_mysql` in `php.ini` and restart Apache/PHP.
 
-## Project Structure
+## Scripts Reference
 
-```
-├── public/           # PHP entry, built frontend
-├── src/
-│   ├── Config/        # Database config
-│   ├── Controller/    # GraphQL controller
-│   ├── GraphQL/       # Schema, types, resolvers
-│   └── Model/         # Category, Product, Attribute, Order
-├── frontend/          # React app
-└── scandiweb.sql      # Database schema + seed data
-```
-
-## Netlify Deployment (Frontend)
-
-The React SPA is deployed on Netlify. SPA routing is configured via `frontend/public/_redirects` (copied to `dist/` during build) and `netlify.toml`.
-
-**Live URL for AutoQA:** `https://scadiwebix.netlify.app`
-
-> **Note:** The working Netlify site is `scadiwebix` (note the spelling). Use this URL for AutoQA submission. Both `/` and `/all` load correctly.
-
-## Auto QA Testing
-
-Test the application at http://165.227.98.170/ before submission. Submit your Netlify URL (e.g. `https://scandiwebix.netlify.app`). Ensure all `data-testid` attributes are present as specified in the task.
+| Command | Description |
+|---------|-------------|
+| `cd backend && composer schema:import` | Import scandiweb.sql |
+| `cd backend && composer seed` | Seed from data.json |
+| `cd backend && composer db:setup` | Import + seed |
+| `cd backend && composer migrate:orders` | Migrate orders to normalized schema |
+| `cd frontend && npm run dev` | Vite dev server |
+| `cd frontend && npm run build` | Production build |
+| `cd frontend && npm run start` | Mock API + dev (no PHP) |

@@ -5,3 +5,5 @@ frontend/
 *.md
 node_modules
 vendor
+backend/vendor
+docs/

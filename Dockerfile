@@ -15,12 +15,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Install deps first for cache
-COPY composer.json composer.lock ./
+# Install backend deps
+COPY backend/composer.json backend/composer.lock ./
 RUN composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction
 
-# Copy app
-COPY . .
+# Copy backend app
+COPY backend/ .
 
 EXPOSE 8080
 

@@ -1,15 +1,15 @@
-/* Grey backdrop - covers page except header (80px) */
+/* Grey backdrop - covers full viewport including header, above header so header is dimmed and not clickable */
 .cart-overlay-backdrop {
   position: fixed;
-  top: 80px;
+  top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   background: rgba(57, 55, 72, 0.22);
-  z-index: 100;
+  z-index: 250;
 }
 
-/* Right drawer - fixed to screen */
+/* Right drawer - above backdrop */
 .cart-overlay {
   position: fixed;
   top: 0;
@@ -18,11 +18,11 @@
   max-width: 100%;
   height: 100vh;
   background: #FFFFFF;
-  z-index: 101;
+  z-index: 251;
   display: flex;
   flex-direction: column;
   padding: 24px 16px;
-  overflow-y: auto;
+  overflow: hidden;
   box-shadow: -4px 0 20px rgba(0, 0, 0, 0.08);
 }
 
@@ -35,6 +35,7 @@
   margin: 0 auto;
   gap: 24px;
   flex: 1;
+  min-height: 0;
 }
 
 .cart-header {
@@ -83,13 +84,14 @@
   background: rgba(29, 31, 34, 0.12);
 }
 
-/* Cart items list */
+/* Cart items list - single scroll container for cart contents */
 .cart-items {
   display: flex;
   flex-direction: column;
   gap: 24px;
   width: 100%;
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
 }
 

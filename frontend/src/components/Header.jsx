@@ -1,4 +1,3 @@
-import { useState, useLayoutEffect } from 'react';
 import { Link, useMatch, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import CartOverlay from './CartOverlay';
@@ -42,24 +41,10 @@ export default function Header() {
   const { totalItems, cartOverlayOpen, setCartOverlayOpen } = useCart();
   const match = useMatch('/:category');
   const activeCategory = match?.params?.category ?? 'all';
-  const [hideNav, setHideNav] = useState(false);
-
-  useLayoutEffect(() => {
-    if (typeof window === 'undefined') return;
-    const hide = () => {
-      if (window.self !== window.top) return true;
-      const root = document.getElementById('root');
-      const categoriesNav = document.querySelector('[aria-label="Categories"]');
-      if (categoriesNav && root && !root.contains(categoriesNav)) return true;
-      return document.querySelectorAll('a[href="/tech"]').length > 1;
-    };
-    if (hide()) queueMicrotask(() => setHideNav(true));
-  }, []);
 
   return (
     <>
       <header className="header">
-        {!hideNav && (
         <nav className="nav-categories" aria-label="Store categories">
           {CATEGORIES.map((cat) => {
             const slug = cat.name.toLowerCase();
@@ -78,7 +63,6 @@ export default function Header() {
             );
           })}
         </nav>
-        )}
         <Link to="/" className="header-logo">
           <BagIcon className="header-logo-icon" />
         </Link>

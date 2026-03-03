@@ -20,3 +20,8 @@ body {
   opacity: 0.6;
   pointer-events: none;
 }
+
+/* Lock body scroll when cart overlay is open (class applied to body via useEffect) */
+body.cart-overlay-open {
+  overflow: hidden;
+}

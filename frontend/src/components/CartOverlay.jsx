@@ -32,7 +32,7 @@ export default function CartOverlay({ onClose }) {
           products: cart.map((item) => ({
             id: item.id,
             quantity: item.quantity,
-            attrs: Object.values(item.selectedAttrs ?? {}),
+            attrs: Object.entries(item.selectedAttrs ?? {}).map(([name, value]) => ({ name, value })),
           })),
         },
       },

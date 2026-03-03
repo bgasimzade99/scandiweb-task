@@ -8,7 +8,7 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const dataPath = join(__dirname, '../src/Controller/data.json');
+const dataPath = join(__dirname, '../backend/data.json');
 let rawData;
 try {
   rawData = JSON.parse(readFileSync(dataPath, 'utf8'));
