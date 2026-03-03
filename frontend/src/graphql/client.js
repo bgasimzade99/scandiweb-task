@@ -1,17 +1,13 @@
 import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client';
 
-/** Production fallback when VITE_GRAPHQL_URI is not set on Netlify. Set VITE_GRAPHQL_URI in Netlify env, or update this to your Railway URL (e.g. https://YOUR-PROJECT.up.railway.app/graphql). */
-const FALLBACK_GRAPHQL_URI = 'https://scandiweb-task-production.up.railway.app/graphql';
-const graphqlUri = import.meta.env.VITE_GRAPHQL_URI || (import.meta.env.PROD ? FALLBACK_GRAPHQL_URI : '/graphql');
+/** GraphQL API – POST /graphql only. Dev: Vite proxy → localhost:8000. Prod: Railway. */
+export const API_URL = import.meta.env.VITE_GRAPHQL_URI
+  || (import.meta.env.PROD ? 'https://scandiweb-task-production.up.railway.app/graphql' : '/graphql');
 
 const httpLink = createHttpLink({
-  uri: graphqlUri,
-  fetchOptions: {
-    mode: 'cors',
-  },
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  uri: API_URL,
+  fetchOptions: { mode: 'cors' },
+  headers: { 'Content-Type': 'application/json' },
 });
 
 export const client = new ApolloClient({
