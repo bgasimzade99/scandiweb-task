@@ -31,8 +31,7 @@ class OrderService
             throw new OrderValidationException('Order must contain at least one product.');
         }
 
-        $total = 0.0;
-        $items = [];
+        $merged = [];
 
         foreach ($productsInput as $idx => $item) {
             $productId = $item['id'] ?? '';
@@ -62,13 +61,23 @@ class OrderService
                 throw new OrderValidationException("Product '{$productId}' requires attribute selection.");
             }
 
-            $total += $unitPrice * $qty;
-            $items[] = [
-                'product_id' => $productId,
-                'quantity' => $qty,
-                'unit_price' => $unitPrice,
-                'attributes' => $attrs,
-            ];
+            $key = $this->buildMergeKey($productId, $attrs);
+            if (isset($merged[$key])) {
+                $merged[$key]['quantity'] += $qty;
+            } else {
+                $merged[$key] = [
+                    'product_id' => $productId,
+                    'quantity' => $qty,
+                    'unit_price' => $unitPrice,
+                    'attributes' => $attrs,
+                ];
+            }
+        }
+
+        $items = array_values($merged);
+        $total = 0.0;
+        foreach ($items as $i) {
+            $total += $i['unit_price'] * $i['quantity'];
         }
 
         $orderId = $this->orderModel->create($items, $total);
@@ -94,5 +103,17 @@ class OrderService
             }
         }
         return $attrs;
+    }
+
+    /**
+     * Deterministic merge key for grouping items by product_id and attributes.
+     *
+     * @param list<array{name: string, value: string}> $attributes
+     */
+    private function buildMergeKey(string $productId, array $attributes): string
+    {
+        $sorted = $attributes;
+        usort($sorted, static fn (array $a, array $b): int => strcmp($a['name'] ?? '', $b['name'] ?? ''));
+        return $productId . '|' . json_encode($sorted);
     }
 }
