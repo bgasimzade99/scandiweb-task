@@ -1,4 +1,4 @@
--- Migration: Normalize orders – remove JSON, add order_items and order_item_attributes
+-- Migration: Normalize orders – replace orders table with normalized schema (no order_details).
 -- Run: mysql -u user -p dbname < scripts/migrate-orders-normalized.sql
 -- Or via PHP: $pdo->exec(file_get_contents('scripts/migrate-orders-normalized.sql'));
 
@@ -8,12 +8,12 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `order_item_attributes`;
 DROP TABLE IF EXISTS `order_items`;
 
--- Replace orders table (drop old JSON column)
+-- Replace orders table with normalized schema (order_status, total, created_at only)
 DROP TABLE IF EXISTS `orders`;
 
 CREATE TABLE `orders` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `status` varchar(255) NOT NULL DEFAULT 'received',
+  `order_status` varchar(255) NOT NULL DEFAULT 'received',
   `total` decimal(10,2) NOT NULL,
   `created_at` datetime NOT NULL,
   PRIMARY KEY (`id`),

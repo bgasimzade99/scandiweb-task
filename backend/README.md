@@ -51,4 +51,5 @@ Endpoints: `POST /graphql`, `GET /health`, `GET /graphql-ping`
 - `composer schema:import` – Import scandiweb.sql
 - `composer seed` – Seed from data.json
 - `composer db:setup` – Import + seed
-- `composer migrate:orders` – Migrate orders to normalized tables
+- `composer migrate:orders` – Migrate orders to normalized tables (order_status, order_items, order_item_attributes)
+- `composer migrate:drop-order-details` – Safely drop legacy order_details column from orders (if present)

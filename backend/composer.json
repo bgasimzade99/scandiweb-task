@@ -16,6 +16,7 @@
         "schema:import": "php scripts/import-schema.php",
         "seed": "php scripts/seed-db.php",
         "db:setup": ["@schema:import", "@seed"],
-        "migrate:orders": "php scripts/migrate-orders-normalized.php"
+        "migrate:orders": "php scripts/migrate-orders-normalized.php",
+        "migrate:drop-order-details": "php scripts/drop-order-details.php"
     }
 }

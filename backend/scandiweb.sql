@@ -54,7 +54,7 @@ CREATE TABLE `attribute_values` (
 
 CREATE TABLE `orders` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `status` varchar(255) NOT NULL DEFAULT 'received',
+  `order_status` varchar(255) NOT NULL DEFAULT 'received',
   `total` decimal(10,2) NOT NULL,
   `created_at` datetime NOT NULL,
   PRIMARY KEY (`id`),

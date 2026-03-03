@@ -2,8 +2,9 @@
 
 /**
  * Runs the orders normalization migration.
- * Use for existing DBs that have the old orders table with order_details JSON.
- * Fresh installs use scandiweb.sql which already has the new schema.
+ * Replaces orders table with normalized schema (order_status, total, created_at).
+ * Adds order_items and order_item_attributes. No JSON in orders.
+ * Fresh installs use scandiweb.sql which already has the same schema.
  *
  * Run: composer migrate:orders
  * Or:  php scripts/migrate-orders-normalized.php
