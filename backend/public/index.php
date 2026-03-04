@@ -19,10 +19,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 $path = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?? '/';
-$basePath = rtrim($_ENV['BASE_PATH'] ?? '', '/');
-if ($basePath !== '' && substr($path, 0, strlen($basePath)) === $basePath) {
-    $path = substr($path, strlen($basePath)) ?: '/';
-}
 $path = '/' . trim($path, '/');
 if ($path === '//') {
     $path = '/';
