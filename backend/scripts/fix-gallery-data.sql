@@ -1,6 +1,11 @@
--- Fix empty gallery: populate with correct image URLs.
--- Run in Railway MySQL Query tab if products have empty gallery.
+-- Fix empty/missing gallery: add column, then populate.
+-- Run in Railway MySQL Query tab.
+-- If you get "Duplicate column 'gallery'", skip the ALTER and run only the UPDATEs.
 
+-- 1. Add gallery column (skip if you get "Duplicate column" error)
+ALTER TABLE products ADD COLUMN gallery TEXT NULL AFTER brand;
+
+-- 2. Populate with image URLs
 UPDATE products SET gallery = 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/MWP22?wid=572&hei=572&fmt=jpeg&qlt=95&.v=1591634795000' WHERE id = 'apple-airpods-pro';
 UPDATE products SET gallery = 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/airtag-double-select-202104?wid=445&hei=370&fmt=jpeg&qlt=95&.v=1617761672000' WHERE id = 'apple-airtag';
 UPDATE products SET gallery = 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/imac-24-blue-selection-hero-202104?wid=904&hei=840&fmt=jpeg&qlt=80&.v=1617492405000' WHERE id = 'apple-imac-2021';

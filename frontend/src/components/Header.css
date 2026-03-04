@@ -20,7 +20,7 @@
 }
 
 .nav-link {
-  text-decoration: none;
+  text-decoration: none !important;
   padding-bottom: 16px;
   border-bottom: 2px solid transparent;
   margin-right: 16px;
@@ -32,6 +32,12 @@
   line-height: 120%;
   text-transform: uppercase;
   color: #1D1F22;
+}
+
+.nav-link:hover,
+.nav-link:focus,
+.nav-link:visited {
+  text-decoration: none !important;
 }
 
 .nav-link:last-of-type {

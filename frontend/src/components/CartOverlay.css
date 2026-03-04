@@ -1,12 +1,9 @@
-/* Grey backdrop - covers full viewport including header, above header so header is dimmed and not clickable */
+/* Grey backdrop - covers full viewport including header (even when scrolled) */
 .cart-overlay-backdrop {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   background: rgba(57, 55, 72, 0.22);
-  z-index: 250;
+  z-index: 9998;
 }
 
 /* Right drawer - above backdrop */
@@ -18,7 +15,7 @@
   max-width: 100%;
   height: 100vh;
   background: #FFFFFF;
-  z-index: 251;
+  z-index: 9999;
   display: flex;
   flex-direction: column;
   padding: 24px 16px;
@@ -36,6 +33,7 @@
   gap: 24px;
   flex: 1;
   min-height: 0;
+  overflow: hidden;
 }
 
 .cart-header {
@@ -171,11 +169,11 @@
   margin: 0;
 }
 
-/* Attributes - grouped under product, label + options aligned */
+/* Attributes - compact layout per design: label inline with options */
 .cart-item-attrs {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
   margin: 0;
   pointer-events: none;
 }
@@ -186,7 +184,7 @@
   align-items: center;
   gap: 8px;
   margin: 0;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   min-width: 0;
   pointer-events: none;
 }
