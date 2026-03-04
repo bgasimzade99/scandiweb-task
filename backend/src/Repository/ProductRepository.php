@@ -4,21 +4,32 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Model\Product;
+
 class ProductRepository extends BaseRepository
 {
+    /**
+     * @return list<Product>
+     */
     public function findAll(): array
     {
-        return $this->fetchAll('SELECT * FROM products ORDER BY name');
+        $rows = $this->fetchAll('SELECT * FROM products ORDER BY name');
+        return Product::fromArrayList($rows);
     }
 
-    public function findById(string $id): ?array
+    public function findById(string $id): ?Product
     {
-        return $this->fetchOne('SELECT * FROM products WHERE id = ?', [$id]);
+        $row = $this->fetchOne('SELECT * FROM products WHERE id = ?', [$id]);
+        return $row !== null ? Product::fromArray($row) : null;
     }
 
+    /**
+     * @return list<Product>
+     */
     public function findByCategory(int $categoryId): array
     {
-        return $this->fetchAll('SELECT * FROM products WHERE category_id = ? ORDER BY name', [$categoryId]);
+        $rows = $this->fetchAll('SELECT * FROM products WHERE category_id = ? ORDER BY name', [$categoryId]);
+        return Product::fromArrayList($rows);
     }
 
     public function hasAttributes(string $productId): bool

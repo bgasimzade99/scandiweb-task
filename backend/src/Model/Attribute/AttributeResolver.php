@@ -4,20 +4,14 @@ declare(strict_types=1);
 
 namespace App\Model\Attribute;
 
+use App\Service\AttributeFormatter;
 use PDO;
 
 class AttributeResolver
 {
-    private const TYPE_REGISTRY = [
-        'text' => TextAttribute::class,
-        'swatch' => SwatchAttribute::class,
-    ];
-
-    private PDO $pdo;
-
-    public function __construct(PDO $pdo)
-    {
-        $this->pdo = $pdo;
+    public function __construct(
+        private PDO $pdo,
+    ) {
     }
 
     public function getAttributesForProduct(string $productId): array
@@ -32,10 +26,9 @@ class AttributeResolver
         $stmt->execute([$productId]);
 
         $grouped = [];
-        foreach ($stmt->fetchAll() as $row) {
+        foreach ($stmt->fetchAll(\PDO::FETCH_ASSOC) as $row) {
             $attrId = $row['id'];
             $type = $row['type'] ?? 'text';
-            $attrClass = self::TYPE_REGISTRY[$type] ?? TextAttribute::class;
 
             if (!isset($grouped[$attrId])) {
                 $grouped[$attrId] = [
@@ -45,7 +38,7 @@ class AttributeResolver
                     'items' => [],
                 ];
             }
-            $grouped[$attrId]['items'][] = $attrClass::formatItem($row);
+            $grouped[$attrId]['items'][] = AttributeFormatter::formatItem($row);
         }
 
         return array_values($grouped);
