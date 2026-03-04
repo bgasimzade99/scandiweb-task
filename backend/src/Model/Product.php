@@ -42,23 +42,15 @@ class Product extends AbstractEntity
     }
 
     /**
-     * Get gallery URLs as array (handles pipe-separated or JSON).
+     * Get gallery URLs from product_gallery join (pipe-separated in data).
      *
      * @return list<string>
      */
     public function getGalleryUrls(): array
     {
         $raw = $this->data['gallery'] ?? '';
-        if (is_array($raw)) {
-            return array_values(array_filter($raw, 'is_string'));
-        }
         if (!is_string($raw) || $raw === '') {
             return [];
-        }
-        $trimmed = trim($raw);
-        if ($trimmed !== '' && ($trimmed[0] === '[' || $trimmed[0] === '{')) {
-            $decoded = json_decode($raw, true);
-            return is_array($decoded) ? array_values(array_filter($decoded, 'is_string')) : [];
         }
         $urls = explode('|', $raw);
         return array_values(array_filter(array_map('trim', $urls), 'strlen'));

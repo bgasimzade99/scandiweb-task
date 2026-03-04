@@ -10,6 +10,7 @@ DROP TABLE IF EXISTS `attribute_values`;
 DROP TABLE IF EXISTS `attributes`;
 DROP TABLE IF EXISTS `orders`;
 DROP TABLE IF EXISTS `prices`;
+DROP TABLE IF EXISTS `product_gallery`;
 DROP TABLE IF EXISTS `products`;
 DROP TABLE IF EXISTS `categories`;
 
@@ -26,10 +27,19 @@ CREATE TABLE `products` (
   `description` text NOT NULL,
   `category_id` bigint NOT NULL,
   `brand` varchar(255) NOT NULL,
-  `gallery` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `products_categories_id_fk` (`category_id`),
   CONSTRAINT `products_categories_id_fk` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `product_gallery` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `product_id` varchar(255) NOT NULL,
+  `url` varchar(1024) NOT NULL,
+  `sort_order` int NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `product_gallery_products_id_fk` (`product_id`),
+  CONSTRAINT `product_gallery_products_id_fk` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `attributes` (
@@ -100,14 +110,42 @@ SET FOREIGN_KEY_CHECKS = 1;
 INSERT INTO `categories` VALUES (1,'all'),(2,'clothes'),(3,'tech');
 
 INSERT INTO `products` VALUES
-('apple-airpods-pro','AirPods Pro',0,'\n Magic like you\'ve never heard \n AirPods Pro have been designed to deliver Active Noise Cancellation for immersive sound, Transparency mode so you can hear your surroundings, and a customizable fit for all-day comfort.',3,'Apple','https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/MWP22?wid=572&hei=572&fmt=jpeg&qlt=95&.v=1591634795000'),
-('apple-airtag','AirTag',1,'\n Lose your knack for losing things. \n AirTag is an easy way to keep track of your stuff. Attach one to your keys, slip another one in your backpack.',3,'Apple','https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/airtag-double-select-202104?wid=445&hei=370&fmt=jpeg&qlt=95&.v=1617761672000'),
-('apple-imac-2021','iMac 2021',1,'The new iMac!',3,'Apple','https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/imac-24-blue-selection-hero-202104?wid=904&hei=840&fmt=jpeg&qlt=80&.v=1617492405000'),
-('apple-iphone-12-pro','iPhone 12 Pro',1,'This is iPhone 12. Nothing else to say.',1,'Apple','https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-12-pro-family-hero?wid=940&hei=1112&fmt=jpeg&qlt=80&.v=1604021663000'),
-('huarache-x-stussy-le','Nike Air Huarache Le',1,'Great sneakers for everyday use!',2,'Nike x Stussy','https://cdn.shopify.com/s/files/1/0087/6193/3920/products/DD1381200_DEOA_2_720x.jpg?v=1612816087|https://cdn.shopify.com/s/files/1/0087/6193/3920/products/DD1381200_DEOA_1_720x.jpg?v=1612816087|https://cdn.shopify.com/s/files/1/0087/6193/3920/products/DD1381200_DEOA_3_720x.jpg?v=1612816087|https://cdn.shopify.com/s/files/1/0087/6193/3920/products/DD1381200_DEOA_5_720x.jpg?v=1612816087|https://cdn.shopify.com/s/files/1/0087/6193/3920/products/DD1381200_DEOA_4_720x.jpg?v=1612816087'),
-('jacket-canada-goosee','Jacket',1,'Awesome winter jacket',2,'Canada Goose','https://images.canadagoose.com/image/upload/w_480,c_scale,f_auto,q_auto:best/v1576016105/product-image/2409L_61.jpg|https://images.canadagoose.com/image/upload/w_480,c_scale,f_auto,q_auto:best/v1576016107/product-image/2409L_61_a.jpg|https://images.canadagoose.com/image/upload/w_480,c_scale,f_auto,q_auto:best/v1576016108/product-image/2409L_61_b.jpg|https://images.canadagoose.com/image/upload/w_480,c_scale,f_auto,q_auto:best/v1576016109/product-image/2409L_61_c.jpg|https://images.canadagoose.com/image/upload/w_480,c_scale,f_auto,q_auto:best/v1576016110/product-image/2409L_61_d.jpg|https://images.canadagoose.com/image/upload/w_1333,c_scale,f_auto,q_auto:best/v1634058169/product-image/2409L_61_o.png|https://images.canadagoose.com/image/upload/w_1333,c_scale,f_auto,q_auto:best/v1634058159/product-image/2409L_61_p.png'),
-('ps-5','PlayStation 5',0,'A good gaming console. Plays games of PS4!',3,'Sony','https://images-na.ssl-images-amazon.com/images/I/510VSJ9mWDL._SL1262_.jpg|https://images-na.ssl-images-amazon.com/images/I/610%2B69ZsKCL._SL1500_.jpg|https://images-na.ssl-images-amazon.com/images/I/51iPoFwQT3L._SL1230_.jpg|https://images-na.ssl-images-amazon.com/images/I/61qbqFcvoNL._SL1500_.jpg|https://images-na.ssl-images-amazon.com/images/I/51HCjA3rqYL._SL1230_.jpg'),
-('xbox-series-s','Xbox Series S 512GB',0,'Hardware-beschleunigtes Raytracing.',3,'Microsoft','https://images-na.ssl-images-amazon.com/images/I/71vPCX0bS-L._SL1500_.jpg|https://images-na.ssl-images-amazon.com/images/I/71q7JTbRTpL._SL1500_.jpg|https://images-na.ssl-images-amazon.com/images/I/71iQ4HGHtsL._SL1500_.jpg|https://images-na.ssl-images-amazon.com/images/I/61IYrCrBzxL._SL1500_.jpg|https://images-na.ssl-images-amazon.com/images/I/61RnXmpAmIL._SL1500_.jpg');
+('apple-airpods-pro','AirPods Pro',0,'\n Magic like you\'ve never heard \n AirPods Pro have been designed to deliver Active Noise Cancellation for immersive sound, Transparency mode so you can hear your surroundings, and a customizable fit for all-day comfort.',3,'Apple'),
+('apple-airtag','AirTag',1,'\n Lose your knack for losing things. \n AirTag is an easy way to keep track of your stuff. Attach one to your keys, slip another one in your backpack.',3,'Apple'),
+('apple-imac-2021','iMac 2021',1,'The new iMac!',3,'Apple'),
+('apple-iphone-12-pro','iPhone 12 Pro',1,'This is iPhone 12. Nothing else to say.',1,'Apple'),
+('huarache-x-stussy-le','Nike Air Huarache Le',1,'Great sneakers for everyday use!',2,'Nike x Stussy'),
+('jacket-canada-goosee','Jacket',1,'Awesome winter jacket',2,'Canada Goose'),
+('ps-5','PlayStation 5',0,'A good gaming console. Plays games of PS4!',3,'Sony'),
+('xbox-series-s','Xbox Series S 512GB',0,'Hardware-beschleunigtes Raytracing.',3,'Microsoft');
+
+INSERT INTO `product_gallery` (`product_id`, `url`, `sort_order`) VALUES
+('apple-airpods-pro','https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/MWP22?wid=572&hei=572&fmt=jpeg&qlt=95&.v=1591634795000',0),
+('apple-airtag','https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/airtag-double-select-202104?wid=445&hei=370&fmt=jpeg&qlt=95&.v=1617761672000',0),
+('apple-imac-2021','https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/imac-24-blue-selection-hero-202104?wid=904&hei=840&fmt=jpeg&qlt=80&.v=1617492405000',0),
+('apple-iphone-12-pro','https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-12-pro-family-hero?wid=940&hei=1112&fmt=jpeg&qlt=80&.v=1604021663000',0),
+('huarache-x-stussy-le','https://cdn.shopify.com/s/files/1/0087/6193/3920/products/DD1381200_DEOA_2_720x.jpg?v=1612816087',0),
+('huarache-x-stussy-le','https://cdn.shopify.com/s/files/1/0087/6193/3920/products/DD1381200_DEOA_1_720x.jpg?v=1612816087',1),
+('huarache-x-stussy-le','https://cdn.shopify.com/s/files/1/0087/6193/3920/products/DD1381200_DEOA_3_720x.jpg?v=1612816087',2),
+('huarache-x-stussy-le','https://cdn.shopify.com/s/files/1/0087/6193/3920/products/DD1381200_DEOA_5_720x.jpg?v=1612816087',3),
+('huarache-x-stussy-le','https://cdn.shopify.com/s/files/1/0087/6193/3920/products/DD1381200_DEOA_4_720x.jpg?v=1612816087',4),
+('jacket-canada-goosee','https://images.canadagoose.com/image/upload/w_480,c_scale,f_auto,q_auto:best/v1576016105/product-image/2409L_61.jpg',0),
+('jacket-canada-goosee','https://images.canadagoose.com/image/upload/w_480,c_scale,f_auto,q_auto:best/v1576016107/product-image/2409L_61_a.jpg',1),
+('jacket-canada-goosee','https://images.canadagoose.com/image/upload/w_480,c_scale,f_auto,q_auto:best/v1576016108/product-image/2409L_61_b.jpg',2),
+('jacket-canada-goosee','https://images.canadagoose.com/image/upload/w_480,c_scale,f_auto,q_auto:best/v1576016109/product-image/2409L_61_c.jpg',3),
+('jacket-canada-goosee','https://images.canadagoose.com/image/upload/w_480,c_scale,f_auto,q_auto:best/v1576016110/product-image/2409L_61_d.jpg',4),
+('jacket-canada-goosee','https://images.canadagoose.com/image/upload/w_1333,c_scale,f_auto,q_auto:best/v1634058169/product-image/2409L_61_o.png',5),
+('jacket-canada-goosee','https://images.canadagoose.com/image/upload/w_1333,c_scale,f_auto,q_auto:best/v1634058159/product-image/2409L_61_p.png',6),
+('ps-5','https://images-na.ssl-images-amazon.com/images/I/510VSJ9mWDL._SL1262_.jpg',0),
+('ps-5','https://images-na.ssl-images-amazon.com/images/I/610%2B69ZsKCL._SL1500_.jpg',1),
+('ps-5','https://images-na.ssl-images-amazon.com/images/I/51iPoFwQT3L._SL1230_.jpg',2),
+('ps-5','https://images-na.ssl-images-amazon.com/images/I/61qbqFcvoNL._SL1500_.jpg',3),
+('ps-5','https://images-na.ssl-images-amazon.com/images/I/51HCjA3rqYL._SL1230_.jpg',4),
+('xbox-series-s','https://images-na.ssl-images-amazon.com/images/I/71vPCX0bS-L._SL1500_.jpg',0),
+('xbox-series-s','https://images-na.ssl-images-amazon.com/images/I/71q7JTbRTpL._SL1500_.jpg',1),
+('xbox-series-s','https://images-na.ssl-images-amazon.com/images/I/71iQ4HGHtsL._SL1500_.jpg',2),
+('xbox-series-s','https://images-na.ssl-images-amazon.com/images/I/61IYrCrBzxL._SL1500_.jpg',3),
+('xbox-series-s','https://images-na.ssl-images-amazon.com/images/I/61RnXmpAmIL._SL1500_.jpg',4);
 
 INSERT INTO `prices` VALUES
 (1,145,'USD','$','huarache-x-stussy-le'),

@@ -67,6 +67,7 @@ class SeedFromDataJson
         $this->pdo->exec('DELETE FROM attribute_values');
         $this->pdo->exec('DELETE FROM attributes');
         $this->pdo->exec('DELETE FROM prices');
+        $this->pdo->exec('DELETE FROM product_gallery');
         $this->pdo->exec('DELETE FROM products');
         $this->pdo->exec('DELETE FROM order_item_attributes');
         $this->pdo->exec('DELETE FROM order_items');
@@ -90,11 +91,13 @@ class SeedFromDataJson
     private function seedProducts(array $products, array $categoryMap): void
     {
         $prodStmt = $this->pdo->prepare(
-            'INSERT INTO products (id, name, in_stock, description, category_id, brand, gallery) VALUES (?, ?, ?, ?, ?, ?, ?)
+            'INSERT INTO products (id, name, in_stock, description, category_id, brand) VALUES (?, ?, ?, ?, ?, ?)
              ON DUPLICATE KEY UPDATE
              name = VALUES(name), in_stock = VALUES(in_stock), description = VALUES(description),
-             category_id = VALUES(category_id), brand = VALUES(brand), gallery = VALUES(gallery)'
+             category_id = VALUES(category_id), brand = VALUES(brand)'
         );
+        $galleryDelStmt = $this->pdo->prepare('DELETE FROM product_gallery WHERE product_id = ?');
+        $galleryStmt = $this->pdo->prepare('INSERT INTO product_gallery (product_id, url, sort_order) VALUES (?, ?, ?)');
         $priceDelStmt = $this->pdo->prepare('DELETE FROM prices WHERE product_id = ?');
         $priceStmt = $this->pdo->prepare(
             'INSERT INTO prices (amount, currency_label, currency_symbol, product_id) VALUES (?, ?, ?, ?)'
@@ -115,7 +118,7 @@ class SeedFromDataJson
             $categoryId = $categoryMap[$categoryName] ?? 1;
             $inStock = ($p['inStock'] ?? true) ? 1 : 0;
             $galleryUrls = $p['gallery'] ?? [];
-            $gallery = is_array($galleryUrls) ? implode('|', array_filter($galleryUrls, 'is_string')) : '';
+            $galleryList = is_array($galleryUrls) ? array_values(array_filter($galleryUrls, 'is_string')) : [];
             $description = $p['description'] ?? '';
 
             $prodStmt->execute([
@@ -125,8 +128,12 @@ class SeedFromDataJson
                 $description,
                 $categoryId,
                 $p['brand'] ?? '',
-                $gallery,
             ]);
+
+            $galleryDelStmt->execute([$p['id']]);
+            foreach ($galleryList as $sortOrder => $url) {
+                $galleryStmt->execute([$p['id'], $url, $sortOrder]);
+            }
 
             $priceDelStmt->execute([$p['id']]);
             $price = $p['prices'][0] ?? null;

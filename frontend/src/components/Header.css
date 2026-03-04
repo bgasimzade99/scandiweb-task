@@ -19,8 +19,15 @@
   gap: 0;
 }
 
+/* Isolated selector: nav links have no text underline, only border-bottom for active */
+.nav-categories .nav-link,
+.nav-categories .nav-link:hover,
+.nav-categories .nav-link:focus,
+.nav-categories .nav-link:visited {
+  text-decoration: none;
+}
+
 .nav-link {
-  text-decoration: none !important;
   padding-bottom: 16px;
   border-bottom: 2px solid transparent;
   margin-right: 16px;
@@ -32,12 +39,6 @@
   line-height: 120%;
   text-transform: uppercase;
   color: #1D1F22;
-}
-
-.nav-link:hover,
-.nav-link:focus,
-.nav-link:visited {
-  text-decoration: none !important;
 }
 
 .nav-link:last-of-type {

@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useCart } from './context/CartContext';
+import { useScrollLock } from './hooks/useScrollLock';
 import Header from './components/Header';
 import ProductList from './components/ProductList';
 import ProductPage from './components/ProductPage';
@@ -8,6 +9,8 @@ import ProductPage from './components/ProductPage';
 export default function AppContent() {
   const { cartOverlayOpen, setCartOverlayOpen } = useCart();
   const location = useLocation();
+
+  useScrollLock(cartOverlayOpen);
 
   useEffect(() => {
     setCartOverlayOpen(false);

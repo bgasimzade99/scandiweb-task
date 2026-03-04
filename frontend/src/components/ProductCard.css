@@ -1,7 +1,6 @@
 /* Product Card - Desktop - Figma spec */
 .product-card {
-  text-decoration: none;
-  color: inherit;
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -9,6 +8,12 @@
   max-width: 100%;
   padding: 0;
   transition: box-shadow 0.2s;
+}
+
+.product-card .product-card-link {
+  text-decoration: none;
+  color: inherit;
+  width: 100%;
 }
 
 .product-card:hover:not(.out-of-stock) .product-card-inner {
